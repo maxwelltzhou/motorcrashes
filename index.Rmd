@@ -1,6 +1,6 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAMES HERE"
+title: "NYC Motor Vehicle Crashses Analysis"
+author: "Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
