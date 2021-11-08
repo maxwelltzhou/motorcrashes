@@ -1,5 +1,5 @@
 --- 
-title: "NYC Motor Vehicle Crashses Analysis"
+title: "NYC Motor Vehicle Crashes Analysis"
 author: "Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
