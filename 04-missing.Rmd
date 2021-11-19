@@ -1,1 +1,247 @@
 # Missing values
+
+```{r include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r libraries}
+library(ggplot2)
+library(tidyverse)
+library(patchwork)
+library(visdat)
+```
+
+```{r missing values function}
+plot_missing <- function(df, percent = FALSE, small = FALSE) {
+  if(percent == FALSE) {
+    missing_patterns <- data.frame(is.na(df)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup()
+    
+    tidymissing <- missing_patterns %>% 
+      select(-count) %>% 
+      mutate(id = row_number()) %>% 
+      pivot_longer(!id, names_to = "variable", values_to = "missing_pattern") %>% 
+      mutate(missing_count = ifelse(missing_pattern == "TRUE", 1, 0)) %>% 
+      mutate(id_fct = factor(id))
+    
+    tidymissing_rows <- tidymissing %>% 
+      group_by(id) %>% 
+      summarise(missing_rows = sum(missing_pattern == "TRUE"))
+    
+    missing_patterns_1 = missing_patterns %>% 
+      mutate(id = row_number()) %>% 
+      mutate(id_fct = factor(id)) %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 0, 1))
+    
+    tidymissing_join <- tidymissing %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 'ALL', missing_pattern)) %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id, count)) %>% 
+      mutate(missing_rows_count = missing_count * count)
+    
+    missing_rows <- tidymissing %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id_fct, count)) %>% 
+      group_by(variable) %>% 
+      summarise(rows = sum(missing_count * count))
+    
+    p1 <- ggplot(tidymissing_join, aes(x = fct_reorder(variable, -missing_rows_count, sum), y = id_fct, fill = pattern)) +
+      geom_tile(color = "white", show.legend = FALSE) +
+      scale_y_discrete(limits = rev) +
+      scale_x_discrete(label = abbreviate) +
+      xlab("variable") +
+      ylab("missing pattern")  + 
+      scale_fill_manual(values = c("grey", "purple"))
+    
+    p2 <- ggplot(missing_patterns_1, aes(x = id_fct, y = count, fill = pattern)) +
+      geom_bar(stat = "identity", show.legend = FALSE) +
+      scale_x_discrete(limits = rev) +
+      coord_flip() +
+      xlab("") + 
+      ylab("row count") 
+    
+    p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
+      geom_bar(stat = "identity", fill = "steelblue2") +
+      scale_x_discrete(label = abbreviate) +
+      xlab("") +
+      ylab("num rows missing") + 
+      ggtitle("Missing value patterns")
+  }
+  
+  else {
+    missing_patterns <- data.frame(is.na(df)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup()
+    
+    tidymissing <- missing_patterns %>% 
+      select(-count) %>% 
+      mutate(id = row_number()) %>% 
+      pivot_longer(!id, names_to = "variable", values_to = "missing_pattern") %>% 
+      mutate(missing_count = ifelse(missing_pattern == "TRUE", 1, 0)) %>% 
+      mutate(id_fct = factor(id))
+    
+    tidymissing_rows <- tidymissing %>% 
+      group_by(id) %>% 
+      summarise(missing_rows = sum(missing_pattern == "TRUE"))
+    
+    missing_patterns_1 = missing_patterns %>% 
+      mutate(id = row_number()) %>% 
+      mutate(id_fct = factor(id)) %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 0, 1)) %>% 
+      mutate(freq = count / sum(count) * 100) %>% 
+      mutate(total_missing = sum(count))
+    
+    tidymissing_join <- tidymissing %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 'ALL', missing_pattern)) %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id, count)) %>% 
+      mutate(missing_rows_count = missing_count * count)
+    
+    missing_rows <- tidymissing %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id_fct, count, total_missing)) %>% 
+      group_by(variable) %>% 
+      mutate(prop = count / total_missing) %>% 
+      summarise(rows = sum(missing_count * prop) * 100)
+    
+    p1 <- ggplot(tidymissing_join, aes(x = fct_reorder(variable, -missing_rows_count, sum), y = id_fct, fill = pattern)) +
+      geom_tile(color = "white", show.legend = FALSE) +
+      scale_y_discrete(limits = rev) +
+      scale_x_discrete(label = abbreviate) +
+      xlab("variable") +
+      ylab("missing pattern")  + 
+      scale_fill_manual(values = c("grey", "purple"))
+    
+    p2 <- ggplot(missing_patterns_1, aes(x = id_fct, y = freq, fill = pattern)) +
+      geom_bar(stat = "identity", show.legend = FALSE) +
+      scale_x_discrete(limits = rev) +
+      scale_y_continuous(limits = c(0, 100)) +
+      coord_flip() +
+      xlab("") + 
+      ylab("% rows") 
+    
+    p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
+      geom_bar(stat = "identity", fill = "steelblue2") +
+      scale_x_discrete(label = abbreviate) +
+      scale_y_continuous(limits = c(0, 100)) +
+      xlab("") +
+      ylab("% rows missing") + 
+      ggtitle("Missing value patterns")
+  }
+  
+  if(small == TRUE){
+    missing_patterns <- data.frame(is.na(df)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup()
+    
+    tidymissing <- missing_patterns %>% 
+      select(-count) %>% 
+      mutate(id = row_number()) %>% 
+      pivot_longer(!id, names_to = "variable", values_to = "missing_pattern") %>% 
+      mutate(missing_count = ifelse(missing_pattern == "TRUE", 1, 0)) %>% 
+      mutate(id_fct = factor(id))
+    
+    tidymissing_rows <- tidymissing %>% 
+      group_by(id) %>% 
+      summarise(missing_rows = sum(missing_pattern == "TRUE"))
+    
+    missing_patterns_1 = missing_patterns %>% 
+      mutate(id = row_number()) %>% 
+      mutate(id_fct = factor(id)) %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 0, 1))
+    
+    tidymissing_join <- tidymissing %>% 
+      left_join(tidymissing_rows) %>% 
+      mutate(pattern = ifelse(missing_rows == 0, 'ALL', missing_pattern)) %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id, count)) %>% 
+      mutate(missing_rows_count = missing_count * count)
+    
+    missing_rows <- tidymissing %>% 
+      left_join(missing_patterns_1 %>% 
+                  select(id_fct, count)) %>% 
+      group_by(variable) %>% 
+      summarise(rows = sum(missing_count * count))
+    
+    tidymissing_join_filter <- tidymissing_join %>% 
+      filter(count > 1000)
+    
+    missing_patterns_filter <- missing_patterns_1 %>% 
+      filter(count > 1000)
+    
+    p1 <- ggplot(tidymissing_join_filter, aes(x = fct_reorder(variable, -missing_rows_count, sum), y = id_fct, fill = pattern)) +
+      geom_tile(color = "white", show.legend = FALSE) +
+      scale_y_discrete(limits = rev) +
+      scale_x_discrete(label = abbreviate) +
+      xlab("variable") +
+      ylab("missing pattern")  + 
+      scale_fill_manual(values = c("grey", "purple"))
+    
+    p2 <- ggplot(missing_patterns_filter, aes(x = id_fct, y = count, fill = pattern)) +
+      geom_bar(stat = "identity", show.legend = FALSE) +
+      scale_x_discrete(limits = rev) +
+      coord_flip() +
+      xlab("") + 
+      ylab("row count") 
+    
+    p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
+      geom_bar(stat = "identity", fill = "steelblue2") +
+      scale_x_discrete(label = abbreviate) +
+      xlab("") +
+      ylab("num rows missing") + 
+      ggtitle("Missing value patterns")
+  }
+  
+  p3 + plot_spacer() + p1 + p2 + 
+    plot_layout(widths = c(4, 1), heights = c(1, 3))
+}
+```
+
+```{r graph 1}
+mvc_df <- read.csv("resources/2020Motor_Vehicle_Collisions_.csv")
+plot_missing(mvc_df)
+```
+
+This is our missing values plot on the entire 2020 motor vehicle crashes dataset. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and very many rows (112,890 rows), this leads to us having an extremely large amount of missing patterns that appear in our dataset. Because it is hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are, the plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.
+
+```{r graph 2}
+mvc_df_small <- mvc_df %>% 
+  select(-c(`COLLISION_ID`, `CRASH.DATE`, `CRASH.TIME`, (`NUMBER.OF.PERSONS.INJURED`:`NUMBER.OF.MOTORIST.KILLED`)))
+
+plot_missing(mvc_df_small, small = TRUE)
+```
+
+Now that we have only selected the columns containing missing values (we already know that all of the columns removed have no missing values at all) and the missing patterns in our dataset that appear more frequently, we can observe many different patterns in the missing values of our dataset.
+
+```{r row and col nas}
+mvc_df$na_rows <- rowSums(apply(is.na(mvc_df), 2, as.numeric))
+mvc_df %>% select(na_rows) %>% 
+  count(na_rows) %>% 
+  rename(count = n) %>% 
+  arrange(desc(na_rows))
+
+mvc_df %>% 
+  select(everything()) %>% 
+  summarise_all(funs(sum(is.na(.)))) %>% 
+  mutate(id = n()) %>% 
+  pivot_longer(!id, names_to = "na_cols", values_to = "count") %>% 
+  select(-id) %>% 
+  arrange(desc(count))
+```
+
+We can see from these two tables that 
+
+```{r graph 3}
+vis_dat(mvc_df %>% select(-na_rows), warn_large_data=FALSE)
+```
+
+In this missing values plot, we can observe the relationship between the missingness of certain rows and the type of the column that the data is missing from. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, all rows that have latitude, longitude, or location missing also have the other two variables missing.
