@@ -157,7 +157,9 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       mutate(id = row_number()) %>% 
       mutate(id_fct = factor(id)) %>% 
       left_join(tidymissing_rows) %>% 
-      mutate(pattern = ifelse(missing_rows == 0, 0, 1))
+      mutate(pattern = ifelse(missing_rows == 0, 0, 1)) %>% 
+      mutate(freq = count / sum(count) * 100) %>% 
+      mutate(total_missing = sum(count))
     
     tidymissing_join <- tidymissing %>% 
       left_join(tidymissing_rows) %>% 
@@ -168,17 +170,23 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
     
     missing_rows <- tidymissing %>% 
       left_join(missing_patterns_1 %>% 
-                  select(id_fct, count)) %>% 
+                  select(id_fct, count, total_missing)) %>% 
       group_by(variable) %>% 
-      summarise(rows = sum(missing_count * count))
+      mutate(prop = count / total_missing) %>% 
+      summarise(rows = sum(missing_count * prop) * 100)
     
-    tidymissing_join_filter <- tidymissing_join %>% 
+    tidymissing_join_filter <- tidymissing_join %>%
+      left_join(missing_rows) %>% 
+      filter(rows > 0) %>% 
       filter(count > 1000)
     
     missing_patterns_filter <- missing_patterns_1 %>% 
       filter(count > 1000)
     
-    p1 <- ggplot(tidymissing_join_filter, aes(x = fct_reorder(variable, -missing_rows_count, sum), y = id_fct, fill = pattern)) +
+    missing_rows_filter <- missing_rows %>% 
+      filter(rows > 0)
+    
+    p1 <- ggplot(tidymissing_join_filter, aes(x = fct_reorder(variable, -rows), y = id_fct, fill = pattern)) +
       geom_tile(color = "white", show.legend = FALSE) +
       scale_y_discrete(limits = rev) +
       scale_x_discrete(label = abbreviate) +
@@ -186,18 +194,20 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       ylab("missing pattern")  + 
       scale_fill_manual(values = c("grey", "purple"))
     
-    p2 <- ggplot(missing_patterns_filter, aes(x = id_fct, y = count, fill = pattern)) +
+    p2 <- ggplot(missing_patterns_filter, aes(x = id_fct, y = freq, fill = pattern)) +
       geom_bar(stat = "identity", show.legend = FALSE) +
       scale_x_discrete(limits = rev) +
+      scale_y_continuous(limits = c(0, 100)) +
       coord_flip() +
       xlab("") + 
-      ylab("row count") 
+      ylab("% rows") 
     
-    p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
+    p3 <- ggplot(missing_rows_filter, aes(x = fct_reorder(variable, -rows), y = rows)) +
       geom_bar(stat = "identity", fill = "steelblue2") +
       scale_x_discrete(label = abbreviate) +
+      scale_y_continuous(limits = c(0, 100)) +
       xlab("") +
-      ylab("num rows missing") + 
+      ylab("% rows missing") + 
       ggtitle("Missing value patterns")
   }
   
@@ -206,42 +216,48 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
 }
 ```
 
-```{r graph 1}
-mvc_df <- read.csv("resources/2020Motor_Vehicle_Collisions_.csv")
-plot_missing(mvc_df)
+```{r read dataset}
+mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
 ```
 
-This is our missing values plot on the entire 2020 motor vehicle crashes dataset. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and very many rows (112,890 rows), this leads to us having an extremely large amount of missing patterns that appear in our dataset. Because it is hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are, the plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.
+```{r graph 1}
+plot_missing(mvc_df, percent = TRUE)
+```
+
+This is our missing values plot on the entire cleaned 2020 motor vehicle crashes data set. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and rows (112,890 rows), this leads us to have an extremely large amount of missing patterns that appear in our dataset. As a result, it is very hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are. The plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.
 
 ```{r graph 2}
-mvc_df_small <- mvc_df %>% 
-  select(-c(`COLLISION_ID`, `CRASH.DATE`, `CRASH.TIME`, (`NUMBER.OF.PERSONS.INJURED`:`NUMBER.OF.MOTORIST.KILLED`)))
-
-plot_missing(mvc_df_small, small = TRUE)
+plot_missing(mvc_df, small = TRUE)
 ```
 
-Now that we have only selected the columns containing missing values (we already know that all of the columns removed have no missing values at all) and the missing patterns in our dataset that appear more frequently, we can observe many different patterns in the missing values of our dataset.
+Now that we have only selected the columns containing missing values (we already know that all of the columns removed have no missing values at all) and the missing patterns in our dataset that appear more frequently, we can observe many different patterns in the missing values of our dataset. For example, we have currently selected the top 15 missing patterns because these are the missing patterns with over 1000 missing rows. We observe that the 4 features with the highest percentages of missing rows have all of the top 15 missing patterns.
 
 ```{r row and col nas}
-mvc_df$na_rows <- rowSums(apply(is.na(mvc_df), 2, as.numeric))
-mvc_df %>% select(na_rows) %>% 
+mvc_df %>% mutate(na_rows = rowSums(apply(is.na(mvc_df), 2, as.numeric))) %>% 
+  select(na_rows) %>% 
   count(na_rows) %>% 
+  rename(number_of_features_missing = na_rows) %>% 
   rename(count = n) %>% 
-  arrange(desc(na_rows))
-
-mvc_df %>% 
+  arrange(desc(count)) %>%
+  mutate(percentage_missing = count/nrow(mvc_df)*100) 
+as.data.frame(mvc_df %>% 
   select(everything()) %>% 
   summarise_all(funs(sum(is.na(.)))) %>% 
   mutate(id = n()) %>% 
   pivot_longer(!id, names_to = "na_cols", values_to = "count") %>% 
   select(-id) %>% 
-  arrange(desc(count))
+  arrange(desc(count)) %>%
+  mutate(percentage_missing = count/nrow(mvc_df)*100) %>%
+  rename(feature_name = na_cols) %>% 
+  rename(num_of_missing = count))
 ```
 
-We can see from these two tables that 
+We can see from these two tables that various rows and columns have less and more missing values. For example, we can see that the vehicle type codes and contributing factor vehicles 3-5 have the most rows missing for those columns because many accidents recorded are between 2 cars or 1 car. For the rows, we can see that the majority of rows have between 7 - 10 columns of missing values per row. Fewer rows have very little or very many missing values.
 
 ```{r graph 3}
-vis_dat(mvc_df %>% select(-na_rows), warn_large_data=FALSE)
+vis_dat(mvc_df, warn_large_data=FALSE)
 ```
 
-In this missing values plot, we can observe the relationship between the missingness of certain rows and the type of the column that the data is missing from. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, all rows that have latitude, longitude, or location missing also have the other two variables missing.
+In this missing values plot, we can observe the relationship between the missingness of certain rows and the type of the column that the data is missing from. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. 
+
+Besides, all rows that have either latitude, longitude, or location missing also have the other two variables missing, which means those rows are able to be not geographically visualized on a map. However, it seems that the majority of the crashes have the geographic features that suggesting we can later visualize these crashes on the map.
