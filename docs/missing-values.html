@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-18" />
+<meta name="date" content="2021-11-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -101,6 +101,61 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
+<p><img src="finalproj_files/figure-html/graph%201-1.png" width="672" /></p>
+<p>This is our missing values plot on the entire cleaned 2020 motor vehicle crashes data set. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and rows (112,890 rows), this leads us to have an extremely large amount of missing patterns that appear in our dataset. As a result, it is very hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are. The plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.</p>
+<p><img src="finalproj_files/figure-html/graph%202-1.png" width="672" /></p>
+<p>Now that we have only selected the columns containing missing values (we already know that all of the columns removed have no missing values at all) and the missing patterns in our dataset that appear more frequently, we can observe many different patterns in the missing values of our dataset. For example, we have currently selected the top 15 missing patterns because these are the missing patterns with over 1000 missing rows. We observe that the 4 features with the highest percentages of missing rows have all of the top 15 missing patterns.</p>
+<pre><code>##    number_of_features_missing count percentage_missing
+## 1                           7 28309        25.07662326
+## 2                          10 25781        22.83727522
+## 3                           8 20253        17.94047303
+## 4                           9 15704        13.91088670
+## 5                          12  6920         6.12986093
+## 6                          11  4347         3.85065108
+## 7                          13  3094         2.74072106
+## 8                           5  2472         2.18974223
+## 9                           6  2441         2.16228187
+## 10                         15   849         0.75205953
+## 11                         14   795         0.70422535
+## 12                          4   748         0.66259190
+## 13                          3   632         0.55983701
+## 14                          1   296         0.26220214
+## 15                          2   232         0.20550979
+## 16                         16    12         0.01062982
+## 17                         17     5         0.00442909</code></pre>
+<pre><code>##    feature_name num_of_missing percentage_missing
+## 1          VTC5         112065         99.2692001
+## 2          CFV5         112037         99.2443972
+## 3          VTC4         110106         97.5338825
+## 4          CFV4         109980         97.4222695
+## 5          VTC3         102794         91.0567809
+## 6          CFV3         102183         90.5155461
+## 7         OFFSN          83436         73.9091151
+## 8          CRSN          59616         52.8089290
+## 9           ZIP          39229         34.7497564
+## 10          BOR          39221         34.7426699
+## 11         VTC2          34120         30.2241120
+## 12         ONSN          29454         26.0908849
+## 13         CFV2          24618         21.8070688
+## 14          LAT           8921          7.9023829
+## 15         LONG           8921          7.9023829
+## 16          LOC           8921          7.9023829
+## 17         VTC1           1073          0.9504828
+## 18         CFV1            513          0.4544247
+## 19         Date              0          0.0000000
+## 20         Time              0          0.0000000
+## 21         X.PI              0          0.0000000
+## 22         X.PK              0          0.0000000
+## 23       X.PEDI              0          0.0000000
+## 24       X.PEDK              0          0.0000000
+## 25         X.CI              0          0.0000000
+## 26         X.CK              0          0.0000000
+## 27         X.MI              0          0.0000000
+## 28         X.MK              0          0.0000000</code></pre>
+<p>We can see from these two tables that various rows and columns have less and more missing values. For example, we can see that the vehicle type codes and contributing factor vehicles 3-5 have the most rows missing for those columns because many accidents recorded are between 2 cars or 1 car. For the rows, we can see that the majority of rows have between 7 - 10 columns of missing values per row. Fewer rows have very little or very many missing values.</p>
+<p><img src="finalproj_files/figure-html/graph%203-1.png" width="672" /></p>
+<p>In this missing values plot, we can observe the relationship between the missingness of certain rows and the type of the column that the data is missing from. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well. For example, we can see that most of the integer columns have no missing values, except for the zip code column, in which much of those are missing. We can also see missing patterns among the rows as well.</p>
+<p>Besides, all rows that have either latitude, longitude, or location missing also have the other two variables missing, which means those rows are able to be not geographically visualized on a map. However, it seems that the majority of the crashes have the geographic features that suggesting we can later visualize these crashes on the map.</p>
 
 </div>
             </section>
