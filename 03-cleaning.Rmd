@@ -1,5 +1,6 @@
 # Data transformation
 
+Haven't completed the description for Data Transformation Chapter yet.
 
 ```{r}
 library(readr)
@@ -10,6 +11,7 @@ cat("Number of Rows:", nrow(raw_data),'\n')
 cat("Number of Columns:", ncol(raw_data))
 
 ```
+
 
 ```{r}
 raw_data %>%

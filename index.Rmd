@@ -7,3 +7,16 @@ site: bookdown::bookdown_site
 
 # Introduction
 
+ A motor vehicle accident can have a large number of factors that lead to it. A collection of a series of such accidents and understanding the pattern (if any)  with respect to the location of the accident, the time at which the accident has taken place and other contributing factors like which vehicle has collided with the motor vehicle that led to the accident can help us understand the correlation between these factors and the accident. This information can be of great insight to both the common people and the police officers, if perceived in the right way. Firstly, it helps the common man by giving a caveat to be more cautious while driving around the accident prone area at a particular point of time. Secondly, it would help police officers in two ways - to keep and check on safety of the people, by monitoring the contributing factors of the accident in the accident prone locations at a particular time and also, to manage their manpower well, more police officers can be put to work at accident prone areas compared to the other areas. This is driving factor behind the project that we aim to work on, to study the pattern of motor vehicle accidents that take place in New York City to help understand and organise resources to reduce accidents
+
+With this study, we try to answer the following questions:
+
+ 1. Is the number of people injured or killed by motor vehicle accidents impacted by the time and day at which the accident has occurred.
+ 
+ 2. Are there any underlying contributing reasons that are resulting in more accidents?
+ 
+ 3. Does the severity of the accident have a correlation with the location at which it has taken place? For instance, do accidents in Manhattan have a higher death ratio compared to  accidents in the Bronx?
+
+ 4. Is there any pattern of the vehicles that hit the motor vehicles? For instance, do they get hit by sedans more than trucks?
+
+ Analysis of the dataset to  answer these questions  would give us a better insight about how the common man can be more careful to avoid accidents and also to the police in ensuring our safety.
