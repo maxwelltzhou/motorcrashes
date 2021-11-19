@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-08" />
+<meta name="date" content="2021-11-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="data-sources.html"/>
 <link rel="next" href="missing-values.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -101,6 +101,76 @@
             <section class="normal" id="section-">
 <div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
+<pre><code>## Number of Rows: 1829491</code></pre>
+<pre><code>## Number of Columns: 29</code></pre>
+<pre><code>## # A tibble: 5 x 29
+##   `CRASH DATE` `CRASH TIME` BOROUGH  `ZIP CODE` LATITUDE LONGITUDE LOCATION     
+##   &lt;chr&gt;        &lt;time&gt;       &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;        
+## 1 04/14/2021   05:32        &lt;NA&gt;             NA     NA        NA   &lt;NA&gt;         
+## 2 04/13/2021   21:35        BROOKLYN      11217     40.7     -74.0 (40.68358, -~
+## 3 04/15/2021   16:15        &lt;NA&gt;             NA     NA        NA   &lt;NA&gt;         
+## 4 04/13/2021   16:00        BROOKLYN      11222     NA        NA   &lt;NA&gt;         
+## 5 04/12/2021   08:25        &lt;NA&gt;             NA      0         0   (0.0, 0.0)   
+## # ... with 22 more variables: ON STREET NAME &lt;chr&gt;, CROSS STREET NAME &lt;chr&gt;,
+## #   OFF STREET NAME &lt;chr&gt;, NUMBER OF PERSONS INJURED &lt;dbl&gt;,
+## #   NUMBER OF PERSONS KILLED &lt;dbl&gt;, NUMBER OF PEDESTRIANS INJURED &lt;dbl&gt;,
+## #   NUMBER OF PEDESTRIANS KILLED &lt;dbl&gt;, NUMBER OF CYCLIST INJURED &lt;dbl&gt;,
+## #   NUMBER OF CYCLIST KILLED &lt;dbl&gt;, NUMBER OF MOTORIST INJURED &lt;dbl&gt;,
+## #   NUMBER OF MOTORIST KILLED &lt;dbl&gt;, CONTRIBUTING FACTOR VEHICLE 1 &lt;chr&gt;,
+## #   CONTRIBUTING FACTOR VEHICLE 2 &lt;chr&gt;, ...</code></pre>
+<pre><code>## Number of Rows: 112890</code></pre>
+<pre><code>## Number of Columns: 29</code></pre>
+<pre><code>##                    CRASH DATE                    CRASH TIME 
+##                        &quot;CRAD&quot;                        &quot;CRAT&quot; 
+##                       BOROUGH                      ZIP CODE 
+##                        &quot;BORO&quot;                        &quot;ZIPC&quot; 
+##                      LATITUDE                     LONGITUDE 
+##                        &quot;LATI&quot;                        &quot;LONG&quot; 
+##                      LOCATION                ON STREET NAME 
+##                        &quot;LOCA&quot;                        &quot;ONSN&quot; 
+##             CROSS STREET NAME               OFF STREET NAME 
+##                        &quot;CRSN&quot;                        &quot;OFSN&quot; 
+##     NUMBER OF PERSONS INJURED      NUMBER OF PERSONS KILLED 
+##                &quot;NUMBEROFPERI&quot;                &quot;NUMBEROFPERK&quot; 
+## NUMBER OF PEDESTRIANS INJURED  NUMBER OF PEDESTRIANS KILLED 
+##                &quot;NUMBEROFPEDI&quot;                &quot;NUMBEROFPEDK&quot; 
+##     NUMBER OF CYCLIST INJURED      NUMBER OF CYCLIST KILLED 
+##                        &quot;NOCI&quot;                        &quot;NOCK&quot; 
+##    NUMBER OF MOTORIST INJURED     NUMBER OF MOTORIST KILLED 
+##                        &quot;NOMI&quot;                        &quot;NOMK&quot; 
+## CONTRIBUTING FACTOR VEHICLE 1 CONTRIBUTING FACTOR VEHICLE 2 
+##                        &quot;CFV1&quot;                        &quot;CFV2&quot; 
+## CONTRIBUTING FACTOR VEHICLE 3 CONTRIBUTING FACTOR VEHICLE 4 
+##                        &quot;CFV3&quot;                        &quot;CFV4&quot; 
+## CONTRIBUTING FACTOR VEHICLE 5                  COLLISION_ID 
+##                        &quot;CFV5&quot;                        &quot;COLL&quot; 
+##           VEHICLE TYPE CODE 1           VEHICLE TYPE CODE 2 
+##                        &quot;VTC1&quot;                        &quot;VTC2&quot; 
+##           VEHICLE TYPE CODE 3           VEHICLE TYPE CODE 4 
+##                        &quot;VTC3&quot;                        &quot;VTC4&quot; 
+##           VEHICLE TYPE CODE 5 
+##                        &quot;VTC5&quot;</code></pre>
+<pre><code>##  [1] &quot;Date&quot;  &quot;Time&quot;  &quot;BOR&quot;   &quot;ZIP&quot;   &quot;LAT&quot;   &quot;LONG&quot;  &quot;LOC&quot;   &quot;ONSN&quot;  &quot;CRSN&quot; 
+## [10] &quot;OFFSN&quot; &quot;#PI&quot;   &quot;#PK&quot;   &quot;#PEDI&quot; &quot;#PEDK&quot; &quot;#CI&quot;   &quot;#CK&quot;   &quot;#MI&quot;   &quot;#MK&quot;  
+## [19] &quot;CFV1&quot;  &quot;CFV2&quot;  &quot;CFV3&quot;  &quot;CFV4&quot;  &quot;CFV5&quot;  &quot;id&quot;    &quot;VTC1&quot;  &quot;VTC2&quot;  &quot;VTC3&quot; 
+## [28] &quot;VTC4&quot;  &quot;VTC5&quot;</code></pre>
+<pre><code>## # A tibble: 112,890 x 32
+##    Date       Time   BOR     ZIP   LAT  LONG LOC   ONSN  CRSN  OFFSN `#PI` `#PK`
+##    &lt;date&gt;     &lt;time&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2020-01-21 15:49  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BRUC~ &quot;\u0~ &lt;NA&gt;      0     0
+##  2 2020-12-31 16:30  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BELT~  &lt;NA&gt; &lt;NA&gt;      0     0
+##  3 2020-12-25 20:19  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BRON~  &lt;NA&gt; &lt;NA&gt;      0     0
+##  4 2020-04-15 15:20  &lt;NA&gt;     NA  40.7 -74.0 (40.~ GOWA~  &lt;NA&gt; &lt;NA&gt;      0     0
+##  5 2020-10-25 02:00  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BELT~  &lt;NA&gt; &lt;NA&gt;      0     0
+##  6 2020-11-11 16:33  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  TRIB~  &lt;NA&gt; &lt;NA&gt;      0     0
+##  7 2020-04-17 01:50  MANH~ 10019  40.8 -74.0 (40.~ 11 A~ &quot;WES~ &lt;NA&gt;      1     0
+##  8 2020-12-18 07:00  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  HORA~ &quot;EAS~ &lt;NA&gt;      0     0
+##  9 2020-09-06 18:05  &lt;NA&gt;     NA  40.8 -73.8 (40.~ WHIT~  &lt;NA&gt; &lt;NA&gt;      0     1
+## 10 2020-12-13 18:35  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  12 A~  &lt;NA&gt; &lt;NA&gt;      0     0
+## # ... with 112,880 more rows, and 20 more variables: #PEDI &lt;dbl&gt;, #PEDK &lt;dbl&gt;,
+## #   #CI &lt;dbl&gt;, #CK &lt;dbl&gt;, #MI &lt;dbl&gt;, #MK &lt;dbl&gt;, CFV1 &lt;chr&gt;, CFV2 &lt;chr&gt;,
+## #   CFV3 &lt;chr&gt;, CFV4 &lt;chr&gt;, CFV5 &lt;chr&gt;, id &lt;dbl&gt;, VTC1 &lt;chr&gt;, VTC2 &lt;chr&gt;,
+## #   VTC3 &lt;chr&gt;, VTC4 &lt;chr&gt;, VTC5 &lt;chr&gt;, Day &lt;chr&gt;, Month &lt;chr&gt;, Year &lt;chr&gt;</code></pre>
 
 </div>
             </section>
