@@ -1,1 +1,11 @@
 # Data transformation
+
+library(readr)
+library(tidyverse)
+data <- read_csv("C:/Users/Ivan/Downloads/Motor_Vehicle_Collisions_-_Crashes.csv")
+as.Date(data[1,])
+data$`CRASH DATE` <- as.Date(data$`CRASH DATE`, format= "%m/%d/%Y")
+data2020 <- data %>%
+  filter(`CRASH DATE` >= as.Date("01/01/2020", format= "%m/%d/%Y"))%>%
+  filter(`CRASH DATE` <= as.Date("12/31/2020", format= "%m/%d/%Y")) 
+write.csv(data2020,"C:/Users/Ivan/Downloads/EDAV_finalproject/motorcrashes/resources/2020Motor_Vehicle_Collisions_.csv", row.names = FALSE)
