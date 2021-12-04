@@ -1,1 +1,79 @@
 # Results
+```{r}
+library(readr)
+library(tidyverse)
+data2020 <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
+```
+
+
+```{r}
+#Severity of accidets in stallen isleand is more compared to other places
+
+#Bar plot, colour and facet, standardise the y axis.
+
+ppl_killed_area_noNA <-data2020 %>% drop_na("BOR")
+
+ppl_inj_kill_area <- ppl_killed_area_noNA %>% 
+                    group_by(BOR) %>%
+                      summarize(total_died = sum(as.numeric(X.PK)),
+                                total_injured = sum(as.numeric(X.PI)))
+
+ppl_inj_kill_area$ratio= ((ppl_inj_kill_area$total_died/ ppl_inj_kill_area$total_injured) *1000)
+
+ggplot(data=ppl_inj_kill_area,
+       aes(x=BOR, y=total_died, group=1)) +
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()+
+  xlab("Borough") +
+  ylab("Total Number of people died") +
+  ggtitle("Number of people died in Borough")
+
+ggplot(data=ppl_inj_kill_area,
+       aes(x=BOR, y=total_injured, group=1)) +
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()+
+  xlab("Borough") +
+  ylab("Total Number of people injured") +
+  ggtitle("Number of people injured in Borough")
+
+ggplot(data=ppl_inj_kill_area,
+       aes(x=BOR, y=ratio, group=1)) +
+  geom_line(linetype = "dashed", color="blue")+
+  geom_point()+
+  xlab("Borough") +
+  ylab("Number of killed/Number of injured ") +
+  ggtitle("Number of people dying oer 1000 injured")
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+
+#This graph gives a indication in which area which contributing factor results in the most number of accidents. We can observe that in most of the records that the Police Department doesn't know the contributing factor of the accident. Maybe they can keep a check on this so trhat infuture they know what is the reason behind the accident.
+#Observations from graph: 
+
+library(RColorBrewer)
+street_noNA <- data2020 %>% drop_na("BOR") %>% drop_na("CFV1")
+
+df3 <- street_noNA %>% 
+  group_by(BOR, CFV1) %>%
+  summarize(count_f=n())
+
+getPalette = colorRampPalette(brewer.pal(9, "Blues"))
+
+p3 <- ggplot(df3, aes(x= BOR, y=CFV1))+
+               geom_tile(aes(fill=count_f),  colour="white")+
+  xlab("Borough") +
+  ylab("Contributing Vehicle Factor") +
+  ggtitle("Contributing Factors for accidents in each borough")+
+  scale_fill_gradient(name = "Scale",
+                      low = "#add8e6",
+                      high = "#384448")
+  
+p3
+
+
+```
