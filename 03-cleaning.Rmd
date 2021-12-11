@@ -1,7 +1,5 @@
 # Data transformation
 
-Haven't completed the description for Data Transformation Chapter yet.
-
 ```{r}
 library(readr)
 library(tidyverse)
@@ -12,11 +10,12 @@ cat("Number of Columns:", ncol(raw_data))
 
 ```
 
-
 ```{r}
 raw_data %>%
   head(5)
 ```
+
+From a glance at the raw data set, we can see that there are over one million observations for this data set and the whole file would be too large to be uploaded to Github. Thus, we have decided to use the subset data of year 2020.
 
 
 ```{r}
@@ -31,28 +30,33 @@ write.csv(data2020,"./resources/2020Motor_Vehicle_Collisions_.csv", row.names = 
 ```{r}
 cat("Number of Rows:", nrow(data2020),'\n')
 cat("Number of Columns:", ncol(data2020))
-abbreviate(colnames(data2020))
+data2020 %>%
+  head(5)
 ```
 
-
+After subsetting the data set, we can see our new data set now has 112,890 observations and 29 columns. We first took a look at our variables. At a first glance, we can see that the column names would be too long for our visualization part. Thus, we decided to abbreviate all the column names. 
 
 ```{r}
 colnames(data2020) <- c("Date","Time","BOR","ZIP","LAT","LONG","LOC","ONSN","CRSN","OFFSN","#PI","#PK","#PEDI","#PEDK","#CI","#CK","#MI","#MK","CFV1","CFV2","CFV3","CFV4","CFV5","id","VTC1","VTC2","VTC3","VTC4","VTC5")
 colnames(data2020)
 ```
 
+After abbreviating the column names, we saw that a majority of categorical data are all in uppercase. Thus, we decided to convert all of them to lowercase with the first letter capitalized.
+
+```{r}
+data2020 = data.frame(lapply(data2020, function(variables) {
+                                if (is.character(variables)) {
+                                  return(str_to_title(tolower(variables)))
+                                } else {
+                                  return(variables)
+                                }
+                              }))
+data2020%>%
+  head(5)
+```
+
+From the overview of the transformed data set, it seems to be cleaned and ready for our missing value and data analysis part. Therefore, we save this cleaned data set as a new csv file in our resources folder.
 
 ```{r}
 write.csv(data2020,"./resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv", row.names = FALSE)
 ```
-
-
-```{r}
-##Create day, month, year columns
-data2020 %>%
-  mutate(Day = format(`Date`, "%D"), 
-         Month = format(`Date`, "%m"), 
-         Year = format(`Date`, "%Y"))
-```
-
-
