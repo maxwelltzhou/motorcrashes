@@ -17,7 +17,6 @@ raw_data %>%
 
 From a glance at the raw data set, we can see that there are over one million observations for this data set and the whole file would be too large to be uploaded to Github. Thus, we have decided to use the subset data of year 2020.
 
-
 ```{r}
 raw_data$`CRASH DATE` <- as.Date(raw_data$`CRASH DATE`, format= "%m/%d/%Y")
 data2020 <- raw_data %>%
@@ -30,11 +29,18 @@ write.csv(data2020,"./resources/2020Motor_Vehicle_Collisions_.csv", row.names = 
 ```{r}
 cat("Number of Rows:", nrow(data2020),'\n')
 cat("Number of Columns:", ncol(data2020))
-data2020 %>%
-  head(5)
+colnames(data2020)
 ```
 
-After subsetting the data set, we can see our new data set now has 112,890 observations and 29 columns. We first took a look at our variables. At a first glance, we can see that the column names would be too long for our visualization part. Thus, we decided to abbreviate all the column names. 
+After subsetting the data set, we can see our new data set now has 112,890 observations and 29 columns. We first took a look at our variables. At a first glance, we can see that the column names would be too long for our visualization part. Thus, we decided to abbreviate all the column names. Below is a table for the original column names and the abbreviations we applied for every single column name as a reference.
+
+```{r}
+abbrev <- c("Date","Time","BOR","ZIP","LAT","LONG","LOC","ONSN","CRSN","OFFSN","#PI","#PK","#PEDI","#PEDK","#CI","#CK","#MI","#MK","CFV1","CFV2","CFV3","CFV4","CFV5","id","VTC1","VTC2","VTC3","VTC4","VTC5")
+abbreviation_legend <- cbind(colnames(data2020),abbrev,description)
+colnames(abbreviation_legend) <- c("Original Column Name","Abbreviation","Description")
+abbreviation_legend
+
+```
 
 ```{r}
 colnames(data2020) <- c("Date","Time","BOR","ZIP","LAT","LONG","LOC","ONSN","CRSN","OFFSN","#PI","#PK","#PEDI","#PEDK","#CI","#CK","#MI","#MK","CFV1","CFV2","CFV3","CFV4","CFV5","id","VTC1","VTC2","VTC3","VTC4","VTC5")
