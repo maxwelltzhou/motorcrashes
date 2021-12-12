@@ -55,21 +55,24 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_x_discrete(label = abbreviate) +
       xlab("variable") +
       ylab("missing pattern")  + 
-      scale_fill_manual(values = c("grey", "purple"))
+      scale_fill_manual(values = c("grey", "purple")) +
+      theme_classic(10)
     
     p2 <- ggplot(missing_patterns_1, aes(x = id_fct, y = count, fill = pattern)) +
       geom_bar(stat = "identity", show.legend = FALSE) +
       scale_x_discrete(limits = rev) +
       coord_flip() +
       xlab("") + 
-      ylab("row count") 
+      ylab("row count") +
+      theme_classic(10)
     
     p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
       geom_bar(stat = "identity", fill = "steelblue2") +
       scale_x_discrete(label = abbreviate) +
       xlab("") +
       ylab("num rows missing") + 
-      ggtitle("Missing value patterns")
+      ggtitle("Missing value patterns") +
+      theme_classic(10)
   }
   
   else {
@@ -117,7 +120,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_x_discrete(label = abbreviate) +
       xlab("variable") +
       ylab("missing pattern")  + 
-      scale_fill_manual(values = c("grey", "purple"))
+      scale_fill_manual(values = c("grey", "purple")) +
+      theme_classic(10)
     
     p2 <- ggplot(missing_patterns_1, aes(x = id_fct, y = freq, fill = pattern)) +
       geom_bar(stat = "identity", show.legend = FALSE) +
@@ -125,7 +129,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_y_continuous(limits = c(0, 100)) +
       coord_flip() +
       xlab("") + 
-      ylab("% rows") 
+      ylab("% rows") +
+      theme_classic(10)
     
     p3 <- ggplot(missing_rows, aes(x = fct_reorder(variable, -rows), y = rows)) +
       geom_bar(stat = "identity", fill = "steelblue2") +
@@ -133,7 +138,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_y_continuous(limits = c(0, 100)) +
       xlab("") +
       ylab("% rows missing") + 
-      ggtitle("Missing value patterns")
+      ggtitle("Missing value patterns") +
+      theme_classic(10)
   }
   
   if(small == TRUE){
@@ -192,7 +198,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_x_discrete(label = abbreviate) +
       xlab("variable") +
       ylab("missing pattern")  + 
-      scale_fill_manual(values = c("grey", "purple"))
+      scale_fill_manual(values = c("grey", "purple")) +
+      theme_classic(10)
     
     p2 <- ggplot(missing_patterns_filter, aes(x = id_fct, y = freq, fill = pattern)) +
       geom_bar(stat = "identity", show.legend = FALSE) +
@@ -200,7 +207,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_y_continuous(limits = c(0, 100)) +
       coord_flip() +
       xlab("") + 
-      ylab("% rows") 
+      ylab("% rows") +
+      theme_classic(10)
     
     p3 <- ggplot(missing_rows_filter, aes(x = fct_reorder(variable, -rows), y = rows)) +
       geom_bar(stat = "identity", fill = "steelblue2") +
@@ -208,7 +216,8 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
       scale_y_continuous(limits = c(0, 100)) +
       xlab("") +
       ylab("% rows missing") + 
-      ggtitle("Missing value patterns")
+      ggtitle("Missing value patterns") +
+      theme_classic(10)
   }
   
   p3 + plot_spacer() + p1 + p2 + 
@@ -220,13 +229,13 @@ plot_missing <- function(df, percent = FALSE, small = FALSE) {
 mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
 ```
 
-```{r graph 1}
+```{r graph 1, fig.height=7, fig.width=8}
 plot_missing(mvc_df, percent = TRUE)
 ```
 
 This is our missing values plot on the entire cleaned 2020 motor vehicle crashes data set. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and rows (112,890 rows), this leads us to have an extremely large amount of missing patterns that appear in our dataset. As a result, it is very hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are. The plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.
 
-```{r graph 2}
+```{r graph 2, fig.height=7, fig.width=8}
 plot_missing(mvc_df, small = TRUE)
 ```
 
