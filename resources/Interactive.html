@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NYC Motor Crashes Exploratory Analysis</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <style>
+      text {
+        font-family: Sans-Serif;
+      }
+    </style>
+  </head>
+  
+  <center>
+  <button onclick="update('Monday')">Monday</button>
+  <button onclick="update('Tuesday')">Tuesday</button>
+  <button onclick="update('Wednesday')">Wednesday</button>
+  <button onclick="update('Thursday')">Thursday</button>
+  <button onclick="update('Friday')">Friday</button>
+  <button onclick="update('Saturday')">Saturday</button>
+  <button onclick="update('Sunday')">Sunday</button>
+  <button onclick="update('Total')">Total</button>
+  </center>
+  
+  <div id="graph"></div>
+
+  <body>
+    <script>
+
+    // set the dimensions and margins of the graph
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var margin = {top: h / 5, right: w / 5, bottom: h / 5, left: w / 5};
+    var innerWidth = w - margin.left - margin.right;
+    var innerHeight = h - margin.top - margin.bottom;
+    
+    // Create scale variables
+    var x = d3.scaleBand()
+      .range([0, innerWidth])
+      .padding(0.1);
+
+    var y = d3.scaleLinear()
+      .range([innerHeight, 0]);
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("body")
+      .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+      .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+        
+    var xlabel = svg.append("text")
+      .attr("x", 1.37 * margin.right)
+      .attr("y", h - 1.5 * margin.bottom)
+      .attr("text-anchor", "left")
+      .text("Hour")
+      
+    var ylabel = svg.append("text")
+      .attr("class", "y label")
+      .attr("y", 6)
+      .attr("x", -2.75 * margin.top)
+      .attr("dy", "-4em")
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "left")
+      .text("Number of Motor Vehicle Crashes Crashes");
+    
+    var title = svg.append("text")
+        .attr("x", w - 4.4 * margin.right)             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "left")
+    
+    // Define axises
+    var xAxis = svg.append("g")
+      .attr("transform", `translate(0,${innerHeight})`);
+
+    var yAxis = svg.append("g")
+      .attr("class", "myYaxis");
+    
+    // Variable selection function
+    function update(day) {
+    
+      // Row converter
+      var rowConverter = function (d) {
+          return {
+            Hour: +d.Hour,
+            Monday: +d.Monday,
+            Tuesday: +d.Tuesday,
+            Wednesday: +d.Wednesday,
+            Thursday: +d.Thursday,
+            Friday: +d.Friday,
+            Saturday: +d.Saturday,
+            Sunday: +d.Sunday,
+            Total: +d.Total
+          };
+        };
+        
+      d3.csv("https://raw.githubusercontent.com/mtz2110/motorcrashes/main/resources/2020Motor_Vehicle_Collisions_Interactive.csv", rowConverter).then(function(data) {
+      
+        // Update X axis
+        x.domain(data.map(d => d.Hour));
+        xAxis.transition().duration(2000).call(d3.axisBottom(x));
+    
+        // Update Y axis
+        y.domain([0, d3.max(data, d => d[day])]);
+        yAxis.transition().duration(2000).call(d3.axisLeft(y));
+    
+        // Create bars
+        var bars = svg.selectAll("rect")
+          .data(data)
+    
+        // Update bars
+        bars.join("rect")
+          .transition()
+          .duration(2000)
+            .attr("x", d => x(d.Hour))
+            .attr("y", d => y(d[day]))
+            .attr("width", x.bandwidth())
+            .attr("height", d => innerHeight - y(d[day]))
+            .attr("fill", "#E1BE6A")
+            
+        // Create title     
+        title.text(d => "Number of Motor Vehicle Crashes in NYC by Hour on " + day + "s");
+          
+      })
+    
+    }
+    
+    // Initialize plot
+    update('Total')
+    
+    </script>
+  </body>
+</html>
