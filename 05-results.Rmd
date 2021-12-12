@@ -35,24 +35,20 @@ One question that we are seeking to answer is: how does the time of day and the 
 mvc_freq <- mvc_df %>% 
   group_by(Day, Hour) %>%
   summarise(Frequency = n())
-
 max_values <- mvc_df %>% 
   group_by(Day, Hour) %>%
   summarise(Frequency = n()) %>% 
   filter(Frequency == max(Frequency)) %>% 
   mutate(max_freq = Frequency)
-
 min_values <- mvc_df %>% 
   group_by(Day, Hour) %>%
   summarise(Frequency = n()) %>% 
   filter(Frequency == min(Frequency)) %>% 
   mutate(min_freq = Frequency)
-
 g1 <- mvc_freq %>% 
   left_join(max_values) %>% 
   left_join(min_values) %>% 
   mutate(color = ifelse(!is.na(max_freq), "#005AB5", ifelse(!is.na(min_freq), "#DC3220", "#E1BE6A")))
-
 ggplot(g1, aes(Hour, Frequency)) +
   geom_col(fill = g1$color) +
   facet_wrap(~Day) +
@@ -74,17 +70,13 @@ g21 <- mvc_df %>%
   group_by(Hour) %>% 
   summarise(across(everything(), sum)) %>% 
   pivot_longer(!Hour, names_to = "Metric", values_to = "Number") 
-
 g22 <- mvc_df %>% 
   select(Hour, X.PEDK, X.MK, X.CK) %>% 
   group_by(Hour) %>% 
   summarise(across(everything(), sum)) %>% 
   pivot_longer(!Hour, names_to = "Metric", values_to = "Number") 
-
 injured <- c(X.PEDI = "Pedestrians Injured", X.MI = "Motorists Injured", X.CI = "Cyclists Injured" )
-
 killed <- c(X.PEDK = "Pedestrians Killed", X.MK = "Motorists Killed", X.CK = "Cyclists Killed" )
-
 g211 <- ggplot(g21, aes(x = Hour, y = Number)) +
   geom_bar(stat='identity', fill = "#E1BE6A") +
   ggtitle("Number of Casualties/Fatalities by Person ") +
@@ -92,14 +84,12 @@ g211 <- ggplot(g21, aes(x = Hour, y = Number)) +
   xlab("") +
   ylab("Frequency") + 
   theme_classic(14)
-
 g212 <- ggplot(g22, aes(x = Hour, y = Number)) +
   geom_bar(stat='identity', fill = "#E1BE6A") +
   facet_wrap(~Metric, labeller = as_labeller(killed)) +
   xlab("Time of Day") +
   ylab("Frequency") + 
   theme_classic(14)
-
 gA <- ggplotGrob(g211)
 gB <- ggplotGrob(g212)
 grid.newpage()
@@ -118,11 +108,9 @@ mvc_counts <- mvc_df %>%
   select(Date, X.PI, X.PK) %>% 
   group_by(Date) %>% 
   summarise(across(everything(), sum))
-
 g3 <- mvc_counts %>% 
   left_join(mvc_counts_freq) %>% 
   pivot_longer(!Date, names_to = "Metric", values_to = "Number")
-
 ggplot(g3, aes(Date, Number, color = fct_recode(Metric, Total = "Frequency", `People Injured` = "X.PI", `Peopled Killed` = "X.PK"))) +
   geom_line() + 
   scale_x_date(date_labels="%b %y",date_breaks  ="1 month") +
@@ -153,7 +141,6 @@ proportion_VTC1 <- mvc_df %>%
   group_by(BOR) %>%
   arrange(desc(proportion)) %>%
   slice(1:10) 
-
 g1 <- proportion_VTC1 %>%
   ungroup %>%
   mutate(BOR = as.factor(BOR),VTC1 = reorder_within(VTC1, n, BOR))%>%
@@ -175,7 +162,6 @@ g1
 Above is a Cleveland dot plot showing number of vehicle collisions caused by different Vehicle types in different boroughs. We can see that all boroughs have almost the same rankings for type of vehicles that causes the vehicle collisions. Obviously, Sedan, SUV, Taxi, Pick-up Truck and Box Truck are the top five types of vehicles that causes the collisions in 2020, which accounts for more than 80% of the total vehicle collisions.
 
 ```{r, fig.width = 7, fig.height = 7}
-
 proportion_CFV1 <- mvc_df %>%
   filter(CFV1 != "Unspecified") %>%
   select(CFV1,BOR) %>%
@@ -187,7 +173,6 @@ proportion_CFV1 <- mvc_df %>%
   distinct(BOR,CFV1, .keep_all = TRUE) %>%
   group_by(BOR) %>%
   slice(1:10)
-
 g2 <- proportion_CFV1 %>%
   ungroup %>%
   mutate(BOR = as.factor(BOR),CFV1 = reorder_within(CFV1, n, BOR))%>%
@@ -215,32 +200,26 @@ Number_of_person_killed_table <-
   group_by(VTC1) %>%
   summarise(Number_of_person_killed = sum(X.PK)) %>%
   arrange(desc(Number_of_person_killed))
-
 Number_of_person_injured_table <- mvc_df %>%
   drop_na(VTC1) %>%
   drop_na(X.PI) %>%
   group_by(VTC1) %>%
   summarise(Number_of_person_injured = sum(X.PI)) %>%
   arrange(desc(Number_of_person_injured)) 
-
 merged_table <- merge(Number_of_person_killed_table, Number_of_person_injured_table, by = "VTC1")
 merged_table2 <- merged_table %>%
   filter( (Number_of_person_injured) > 0 )
-
 rate <- mvc_df %>% 
   summarise(injured_rate = sum(X.PI)/(sum(X.PK)+sum(X.PI)))
-
 bt <- function(Number_of_person_killed, Number_of_person_injured) binom.test(x = Number_of_person_injured, n = Number_of_person_killed + Number_of_person_injured, p = rate[,1])$p.value
-
 merged_table3 <-  merged_table2 %>%
   mutate(pvalue = map2_dbl(Number_of_person_killed, Number_of_person_injured, bt)) %>%
-  mutate(Type = case_when((pvalue <= .1) & (Number_of_person_injured > 20*Number_of_person_killed) ~ "Mild",
-                          (pvalue <= .1) & (20*Number_of_person_killed > Number_of_person_injured) ~ "Severe",
+  mutate(Type = case_when((pvalue <= .05) & (Number_of_person_injured > 100*Number_of_person_killed) ~ "Mild",
+                          (pvalue <= .05) & (100*Number_of_person_killed > Number_of_person_injured) ~ "Severe",
                           TRUE ~ "Neutral")) %>% 
   mutate(Type = fct_relevel(Type, "Severe", "Neutral", "Mild"))
-
 merged_table3 %>%
-  mutate(label = ifelse(pvalue <= .1, VTC1, "")) %>%
+  mutate(label = ifelse(pvalue <= .01, VTC1, "")) %>%
   ggplot(aes(log(Number_of_person_injured+1), log(Number_of_person_killed+1), label = label, color = Type)) +
   scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
   geom_point(size = 1) +
@@ -251,12 +230,13 @@ merged_table3 %>%
   theme_linedraw() + 
   theme_classic(12)+
   theme(legend.position = "top")
-
 ```
 
-We did a null hypothesis test on using H0: p = 0.006 and H0: p = 0.006, which is the average possibility of the death ratio in 2020, and categorized the vehicle types into severe, neutral, and mild to rank the severity of the vehicles collisions based on its likelihood of resulting in death. 
+We did a null hypothesis test on using H0: p = 0.006 and Ha: p ≠ 0.006 using the significance level of 0.05, which is the average possibility of the death ratio in 2020, and categorized the vehicle types into severe, neutral, and mild to rank the severity of the vehicles collisions based on its possibility of resulting in death rather than just injuries in the accidents. 
 
-From the above scatterplot, we can see that several vehicle types that would are more likely to lead to death rather than just Injury are Motorcycle, Concrete Mixer, Flat Rack, Fork lift, etc. On the Contrary, some of those types that are less likely to cause deaths rather than injuries are Bike, E-scooters, Sedan, etc.
+Then we plot the categorized data and their label on a log-transformed graph in order to zoom in for those vehicle types have relative small sample size comparing to those have very large sample sizes.
+
+From the above scatter plot, we can see that some of the vehicle types that would are more likely to lead to death rather than just injury are Motorcycle, Concrete Mixer, Flat Rack, Fork lift, etc. On the Contrary, vehicle types that are less likely to cause deaths rather than injuries are Station Wagon/Sport Utility Van.
 
 
 ```{r}
@@ -268,7 +248,6 @@ Number_of_person_killed_CFV1_table <-
   summarise(Number_of_person_killed = sum(X.PK)) %>%
   arrange(desc(Number_of_person_killed))%>%
   slice(1:20)
-
 Number_of_person_injured_CFV1_table <- mvc_df %>%
   drop_na(CFV1) %>%
   drop_na(X.PI) %>%
@@ -276,20 +255,16 @@ Number_of_person_injured_CFV1_table <- mvc_df %>%
   summarise(Number_of_person_injured = sum(X.PI)) %>%
   arrange(desc(Number_of_person_injured))%>%
   slice(1:20)
-
 merged_table <- merge(Number_of_person_killed_CFV1_table, Number_of_person_injured_CFV1_table, by = "CFV1")
-
 merged_table2 <- merged_table 
-
 merged_table3 <-  merged_table2 %>%
   mutate(pvalue = map2_dbl(Number_of_person_killed, Number_of_person_injured, bt)) %>%
-  mutate(Type = case_when(pvalue <= .1 & Number_of_person_injured > 100*Number_of_person_killed ~ "Mild",
-                          pvalue <= .1 & 100*Number_of_person_killed > Number_of_person_injured ~ "Severe",
+  mutate(Type = case_when(pvalue <= .05 & Number_of_person_injured > 100*Number_of_person_killed ~ "Mild",
+                          pvalue <= .05 & 100*Number_of_person_killed > Number_of_person_injured ~ "Severe",
                           TRUE ~ "Neutral")) %>% 
   mutate(Type = fct_relevel(Type, "Severe", "Neutral", "Mild"))
-
 merged_table3 %>%
-  mutate(label = ifelse(pvalue <= .1, CFV1, "")) %>%
+  mutate(label = ifelse(pvalue <= .05, CFV1, "")) %>%
   ggplot(aes(log(Number_of_person_injured+1), log(Number_of_person_killed+1), label = label, color = Type)) +
   geom_point(size = 1) +
   scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
@@ -301,12 +276,11 @@ merged_table3 %>%
   xlim(5, 10) + 
   theme_classic(12)+
   theme(legend.position = "top")
-
 ```
 
-We also did the same null hypothesis test on the death ratio by different contribution factors and rank the severity of the vehicles collisions based on their likelihoods of resulting in death. 
+We also did the same null hypothesis test on the death ratio by different contribution factors and rank the severity of the vehicles collisions based on their possibilities of resulting in death rather than injuries. We also did the same log transformation when ploting the scatter plots.
 
-From the above scatter plot, we can see that four of the most severe vehicle collision contributing factors that are more likely to lead to death are Unsafe speed, Traffic Control Disregarded, Pedestrian/Bicyclist/Other Pedestrian Error/Confusion. On the Contrary, those factors that are less likely to cause deaths rather than injuries are following too closely, failure to yield right-of-way, and driver inattention/distraction.
+From the above scatter plot, we can see that the top three most severe vehicle collision contributing factors that are more likely to lead to death are Unsafe speed, Traffic Control Disregarded, and Pedestrian/Bicyclist/Other Pedestrian Error/Confusion. On the Contrary, those factors that are less likely to cause deaths rather than injuries are following too closely, failure to yield right-of-way, and driver inattention/distraction.
 
 
 ```{r}
@@ -322,11 +296,9 @@ register_google(key = myKey)
 
 ```{r}
 NYmap <- get_map(location= 'New York City',zoom = 11)
-
 mvc_df_loc <- mvc_df %>%
   filter(LONG != 0) %>%
   filter(LAT != 0)
-
 ggmap(NYmap) + 
   geom_point(data=mvc_df_loc,aes(x=LONG,y=LAT, color = "r"),size=.15,alpha=.05) + 
   facet_wrap(~BOR,nrow = 2) + 
@@ -334,7 +306,6 @@ ggmap(NYmap) +
   xlab("Longitude") +
   ylab("Latitude") +
   ggtitle('Scatterplot for Vehicle Collision by Borough in New York in 2020')
-
 ```
 
 In order to see whether any data points has been mistakenly recorded as well as observing whether the missing values for borough would have any geographical patterns, we plot the location of vehicle collisions on the map after removing all location with longitude and latitude with the magnitude of 0 since those collisions would be otherwise happened on the Null Island. And the reason why we plotted them by facet instead of only color categories was that the missing values patterns may be possibly overlapped by other points, which makes it harder to obverse. Meanwhile, it would be better for determing whether there are mistakenly coded positions for each borough.
@@ -354,7 +325,6 @@ g1 <-ggmap(NYmap) +
         legend.position="left")+
   xlab("Longitude") +
   ylab("Latitude")
-
 g2<- ggmap(NYmap)  + 
   stat_density2d(data = mvc_df_loc[which(mvc_df_loc$X.PK >= 1),],
                  aes(x = LONG, y = LAT,fill = ..level.., alpha = ..level..), 
@@ -385,11 +355,9 @@ Question1: Which contributing factors affect each of the vehicles the most, base
 
 ```{r, fig.height = 8, fig.width = 8}
 library(RColorBrewer)
-
 street_noNA <- mvc_df %>%
   drop_na("VTC1") %>%
   drop_na("CFV1")
-
 df3 <- street_noNA %>%
   filter(CFV1!= 'Unspecified')  %>%
   group_by(VTC1, CFV1) %>%
@@ -397,9 +365,7 @@ df3 <- street_noNA %>%
   arrange(num_vtc1)%>%
   filter(num_vtc1 > 80) %>%
   summarize(count_f=sum(X.PI))
-
 getPalette = colorRampPalette(brewer.pal(9, "Blues"))
-
 p3 <- ggplot(df3, aes(x= VTC1, y=CFV1))+
                geom_tile(aes(fill=count_f),  colour="white")+
   geom_text(aes(label=count_f)) +
@@ -414,7 +380,6 @@ p3 <- ggplot(df3, aes(x= VTC1, y=CFV1))+
   scale_x_discrete(label=abbreviate) +  
   theme_classic(12) +
   theme(legend.position="bottom")
-
 p3 
 ```
 
@@ -429,12 +394,10 @@ Question2 : Which of the top 15 streets in each of the Boroughs in New York have
 
 ```{r, fig.height = 10, fig.width = 8}
 ppl_killed_area_noNA <- mvc_df %>% drop_na("BOR")
-
 df4 <- ppl_killed_area_noNA %>% drop_na("ONSN")
 df5 <- df4 %>% group_by(BOR, ONSN) %>%
                       summarize(total_injured = sum(as.numeric(X.PI))) %>%
   top_n(15,total_injured)
-
 plot1 <-
   df5 %>%
   ungroup %>%
@@ -461,19 +424,14 @@ Plot 3: For each of the borough, how many pedestrians, motorist, cyclist have be
 Question 3: For each of the boroughs, how many pedestrians, motorists, cyclists have been injured and killed based on the vehicle type?
 
 ```{r, fig.height = 5, fig.width= 8}
-
 mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
 df_new <- mvc_df %>%
   drop_na("BOR")
 df_new <- mvc_df %>% 
   drop_na("VTC1")
-
 df_new <- aggregate(cbind(X.PI, X.PK, X.CI,X.CK,X.PEDI,X.PEDK,X.MI,X.MK) ~ VTC1, data = mvc_df, FUN = sum, na.rm = TRUE)
-
 df_new$BOR <- mvc_df$BOR[match(df_new$VTC1, mvc_df$VTC1)]
-
 df_new = subset(df_new, df_new$X.PI > 1)
-
 ```
 
 ```{r, fig.height = 5, fig.width= 8}
@@ -483,18 +441,14 @@ p1 <- ggparcoord(df_new,columns=2:9,
            showPoints = TRUE,
            title = "Parallel Coordinate Plot for number of people injured in BOR")+
   theme_classic(14)
-
-
 p2 <- ggparcoord(df_new,columns=2:9, 
            scale="uniminmax",
            groupColumn="BOR",
            showPoints = TRUE,
            title = "Parallel Coordinate Plot for number of people injured in BOR") +
   theme_classic(14)
-
 p1
 p2
-
 ```
 
 This is a parallel coordinate plot, which shows the for a number of vehicles, number of cyclist injured, cyclist killed, pedestrians injured, pedestrians killed, motorist injured, motorist killed, total number of people injured and total number of people killed per each of the five borough.
