@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="missing-values.html"/>
 <link rel="next" href="interactive-component.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -77,7 +77,10 @@
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#impact-of-time-of-day-and-day-of-the-week-on-crashes"><i class="fa fa-check"></i><b>5.1</b> Impact of Time of Day and Day of the Week on Crashes</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -101,7 +104,16 @@
             <section class="normal" id="section-">
 <div id="results" class="section level1" number="5">
 <h1><span class="header-section-number">Chapter 5</span> Results</h1>
+<div id="impact-of-time-of-day-and-day-of-the-week-on-crashes" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Impact of Time of Day and Day of the Week on Crashes</h2>
+<p>One question that we are seeking to answer is: how does the time of day and the day of the week affect the number of crashes that occur and the number of people killed/injured in New York City?</p>
+<p><img src="finalproj_files/figure-html/graph1-1.png" width="768" /></p>
+<p>The above plot shows a small multiples plot of the frequency that crashes occurred during each hour of the day. Each facet shows those frequency counts for one day out of the week. We observe that the frequency of crashes over the day follows the same distribution across all days of the week. Additionally, for each day of the week, the hour with the most crashes is colored blue, while the hour with the least crashes is colored red.</p>
+<p>For all of the weekdays, time periods that very early in the morning (1 - 5 AM) have very low numbers of crashes, with the the least amount of crashes occurring either at 3 or 4 AM. On weekend mornings, number of crashes is much higher at those early morning time periods compared to the weekdays, and the hour of least crashes occurring later in the morning (5 AM on Saturday and 7 AM on Sunday). Some likely explanations for these trends across early morning crashes are: first, there are less people are driving during the early morning during weekdays because of work/school the next day. Second, there are more people driving during the early mornings of the weekends because many people do not have work/school then. Additionally, as people consume more alcohol and are less aware during the nights before these weekend periods, more crashes occur as people are driving home during the early morning.</p>
+<p>On the other hand, the period with the largest amount of crashes during the weekdays are from 2 - 6 PM, with the highest amount of crashes during 4 or 6 PM. On weekends, the period with the largest amount of crashes is between 2 - 4 PM, with the highest amount of crashes at 2 PM. The explanation for these high crashes hours are that this time period during the weekdays are usually rush hour, the times when the majority of the people return home from work. With the high volume of traffic, most crashes are bound to occur. As less people drive around on the weekend, there are less crashes during the day in general compared to the weekdays.</p>
+<p><img src="finalproj_files/figure-html/graph2-1.png" width="672" /></p>
 
+</div>
 </div>
             </section>
 
