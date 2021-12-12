@@ -1,1 +1,502 @@
 # Results
+```{r include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r libraries}
+library(ggplot2)
+library(tidyverse)
+library(gridExtra)
+library(grid)
+library(lubridate)
+library(patchwork)
+library(visdat)
+library(readr)
+library(GGally)
+```
+
+```{r read dataset}
+mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
+```
+
+## Impact of Time of Day and Day of the Week on Crashes
+
+```{r preprocess}
+mvc_df <- mvc_df %>% 
+  mutate(Month = as.integer(substr(Date, start = 6, stop = 7))) %>% 
+  mutate(Date = as.Date(Date)) %>% 
+  mutate(Hour = as.integer(substr(Time, start = 1, stop = 2))) %>% 
+  mutate(Day = fct_relevel(weekdays(as.Date(Date)), "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+```
+
+One question that we are seeking to answer is: how does the time of day and the day of the week affect the number of crashes that occur and the number of people killed/injured in New York City?
+
+```{r graph1, fig.width = 6, fig.height = 6}
+mvc_freq <- mvc_df %>% 
+  group_by(Day, Hour) %>%
+  summarise(Frequency = n())
+
+max_values <- mvc_df %>% 
+  group_by(Day, Hour) %>%
+  summarise(Frequency = n()) %>% 
+  filter(Frequency == max(Frequency)) %>% 
+  mutate(max_freq = Frequency)
+
+min_values <- mvc_df %>% 
+  group_by(Day, Hour) %>%
+  summarise(Frequency = n()) %>% 
+  filter(Frequency == min(Frequency)) %>% 
+  mutate(min_freq = Frequency)
+
+g1 <- mvc_freq %>% 
+  left_join(max_values) %>% 
+  left_join(min_values) %>% 
+  mutate(color = ifelse(!is.na(max_freq), "#005AB5", ifelse(!is.na(min_freq), "#DC3220", "#E1BE6A")))
+
+ggplot(g1, aes(Hour, Frequency)) +
+  geom_col(fill = g1$color) +
+  facet_wrap(~Day) +
+  ggtitle("Number of Crashes by Time of Day in 2020") +
+  xlab("Time of Day") +
+  ylab("Frequency") + 
+  theme_classic(14)
+```
+
+The above plot shows a small multiples plot of the frequency that crashes occurred during each hour of the day. Each facet shows those frequency counts for one day out of the week. We observe that the frequency of crashes over the day follows the same distribution across all days of the week. Additionally, for each day of the week, the hour with the most crashes is colored blue, while the hour with the least crashes is colored red. 
+
+For all of the weekdays, time periods that very early in the morning (1 - 5 AM) have very low numbers of crashes, with the the least amount of crashes occurring either at 3 or 4 AM. On weekend mornings, number of crashes is much higher at those early morning time periods compared to the weekdays, and the hour of least crashes occurring later in the morning (5 AM on Saturday and 7 AM on Sunday). Some likely explanations for these trends across early morning crashes are: first, there are less people are driving during the early morning during weekdays because of work/school the next day. Second, there are more people driving during the early mornings of the weekends because many people do not have work/school then. Additionally, as people consume more alcohol and are less aware during the nights before these weekend periods, more crashes occur as people are driving home during the early morning.
+
+On the other hand, the period with the largest amount of crashes during the weekdays are from 2 - 6 PM, with the highest amount of crashes during 4 or 6 PM. On weekends, the period with the largest amount of crashes is between 2 - 4 PM, with the highest amount of crashes at 2 PM. The explanation for these high crashes hours are that this time period during the weekdays are usually rush hour, the times when the majority of the people return home from work. With the high volume of traffic, most crashes are bound to occur. As less people drive around on the weekend, there are less crashes during the day in general compared to the weekdays.
+
+```{r graph2, fig.width = 6, fig.height = 6}
+g21 <- mvc_df %>% 
+  select(Hour, X.PEDI, X.MI, X.CI) %>% 
+  group_by(Hour) %>% 
+  summarise(across(everything(), sum)) %>% 
+  pivot_longer(!Hour, names_to = "Metric", values_to = "Number") 
+
+g22 <- mvc_df %>% 
+  select(Hour, X.PEDK, X.MK, X.CK) %>% 
+  group_by(Hour) %>% 
+  summarise(across(everything(), sum)) %>% 
+  pivot_longer(!Hour, names_to = "Metric", values_to = "Number") 
+
+injured <- c(X.PEDI = "Pedestrians Injured", X.MI = "Motorists Injured", X.CI = "Cyclists Injured" )
+
+killed <- c(X.PEDK = "Pedestrians Killed", X.MK = "Motorists Killed", X.CK = "Cyclists Killed" )
+
+g211 <- ggplot(g21, aes(x = Hour, y = Number)) +
+  geom_bar(stat='identity', fill = "#E1BE6A") +
+  ggtitle("Number of Casualties/Fatalities by Person ") +
+  facet_wrap(~Metric, labeller = as_labeller(injured)) +
+  xlab("") +
+  ylab("Frequency") + 
+  theme_classic(14)
+
+g212 <- ggplot(g22, aes(x = Hour, y = Number)) +
+  geom_bar(stat='identity', fill = "#E1BE6A") +
+  facet_wrap(~Metric, labeller = as_labeller(killed)) +
+  xlab("Time of Day") +
+  ylab("Frequency") + 
+  theme_classic(14)
+
+gA <- ggplotGrob(g211)
+gB <- ggplotGrob(g212)
+grid.newpage()
+grid.draw(rbind(gA, gB))
+```
+
+The above graphs show the casualties and fatalities that result from crashes faceted the type of casualty or fatality. Each facet shows the total number of crashes that resulted in that outcome for each hour in the day. We can observe from the injury row that cyclists and pedestrians are injured far less than than the motorist involved in accidents. This is probably because the majority of the crashes occur between two or more vehicles and without cyclists or pedestrians involved. We can see the same trend of early mornings have far less crashes relatively and that the number of crashes of all types in the injuries row increase steady until the afternoon/evening time. From the row with deaths, we can see the cyclist deaths are far more sporadic and fewer than both motorist and pedestrian deaths. This may be because crashes involving cyclists have less impact because of the bike or other reasons. We can also see that there are far more motorist deaths late at night and early morning. This may be a result of more people driving under the influence of alcohol during those time periods, while during the day, more people will be working and not driving. We can also see that pedestrians also have a high number of deaths throughout the day, almost as high as the motorist deaths. This is interesting because from the injuries row, the ratio of pedestrian to motorist injuries is far lower. However for deaths, the ratio is higher. This may be because in crashes involving motorist, although the number of those crashes is higher, they also have more safety measures, such as seat belts and airbags, to prevent death, while crashes involving pedestrians have a higher chance of being fatal.
+
+
+```{r graph3, fig.width = 8, fig.height = 6}
+mvc_counts_freq <- mvc_df %>% 
+  group_by(Date) %>%
+  summarise(Frequency = n())
+  
+mvc_counts <- mvc_df %>% 
+  select(Date, X.PI, X.PK) %>% 
+  group_by(Date) %>% 
+  summarise(across(everything(), sum))
+
+g3 <- mvc_counts %>% 
+  left_join(mvc_counts_freq) %>% 
+  pivot_longer(!Date, names_to = "Metric", values_to = "Number")
+
+ggplot(g3, aes(Date, Number, color = fct_recode(Metric, Total = "Frequency", `People Injured` = "X.PI", `Peopled Killed` = "X.PK"))) +
+  geom_line() + 
+  scale_x_date(date_labels="%b %y",date_breaks  ="1 month") +
+  scale_color_manual(values=c("#005AB5", "#DC3220", "#E1BE6A")) +
+  ggtitle("Total Crashes, Injuries, and Deaths by Day in 2020") +
+  xlab("Date") +
+  ylab("Frequency") + 
+  labs(colour = NULL) +
+  theme_classic(14) +
+  theme(legend.position="bottom")
+```
+
+The above graph shows the change in the number of total crashes, number of people injured, and number of people killed in crashes over all of the 2020. We can observe that for the total number of crashes and people injured, these values decreased greatly starting in mid-March and decreasing until mid-April before slowly increasing again. This trend is likely due to the impact of COVID-19, as the city shutdown and advised people to no leave their houses. As a result, many people either left the state or stayed at home, both of which decreased the number of people who drove very greatly. An interesting observation is that the decrease in total crashes is proportional to the decrease in number of people injured, which is logical. During the pre-shutdown months (January - March), total crashes averaged at levels around 450 and dropped to around 150 at the bottom. For injuries, it started at around 150 and dropped to around 50. Both of these show a 300% decrease in crashes during the same time period. However, we can also notice that the pandemic does not really have any effect on the number of deaths. For the entire year, both pre-shutdown and post-shutdown, the majority of days ranged between 0 - 5 deaths. A likely explanation for this is that deaths are quite rare during all periods of time, and less people driving does not contribute to less deaths.
+
+## Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations
+
+```{r, fig.width = 7, fig.height = 7}
+library(tidytext)
+proportion_VTC1 <- mvc_df %>%
+  filter(VTC1 != "Unspecified") %>%
+  select(VTC1,BOR) %>%
+  drop_na(VTC1) %>%
+  drop_na(BOR) %>%
+  group_by(BOR) %>%
+  count(VTC1) %>% 
+  mutate(proportion = n/nrow(mvc_df)) %>% 
+  distinct(BOR,VTC1, .keep_all = TRUE) %>%
+  group_by(BOR) %>%
+  arrange(desc(proportion)) %>%
+  slice(1:10) 
+
+g1 <- proportion_VTC1 %>%
+  ungroup %>%
+  mutate(BOR = as.factor(BOR),VTC1 = reorder_within(VTC1, n, BOR))%>%
+  ggplot(aes(VTC1, n, fill = BOR)) +
+  geom_point(show.legend = FALSE) +
+  facet_wrap(~BOR, scales = "free_y",nrow = 5) +
+  coord_flip() +
+  scale_x_reordered() +
+  scale_y_continuous(breaks = c(2500, 5000,7500,10000,12500), labels = c("2.5k", "5k","7.5k","10k","12.5k"))+
+  theme_classic(12)+
+  theme_linedraw() +
+  xlab("Vehicle Type") +
+  ylab("Number of Vehicle Collisions")+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+g1
+```
+
+Above is a Cleveland dot plot showing number of vehicle collisions caused by different Vehicle types in different boroughs. We can see that all boroughs have almost the same rankings for type of vehicles that causes the vehicle collisions. Obviously, Sedan, SUV, Taxi, Pick-up Truck and Box Truck are the top five types of vehicles that causes the collisions in 2020, which accounts for more than 80% of the total vehicle collisions.
+
+```{r, fig.width = 7, fig.height = 7}
+
+proportion_CFV1 <- mvc_df %>%
+  filter(CFV1 != "Unspecified") %>%
+  select(CFV1,BOR) %>%
+  drop_na(CFV1) %>%
+  drop_na(BOR) %>%
+  group_by(BOR) %>%
+  count(CFV1) %>% 
+  mutate(proportion = n/nrow(mvc_df)) %>% 
+  distinct(BOR,CFV1, .keep_all = TRUE) %>%
+  group_by(BOR) %>%
+  slice(1:10)
+
+g2 <- proportion_CFV1 %>%
+  ungroup %>%
+  mutate(BOR = as.factor(BOR),CFV1 = reorder_within(CFV1, n, BOR))%>%
+  ggplot(aes(CFV1, n, fill = BOR)) +
+  geom_point(show.legend = FALSE) +
+  facet_wrap(~BOR, scales = "free_y",nrow = 5) +
+  coord_flip() +
+  scale_x_reordered() +
+  scale_y_continuous(breaks = c(2000, 4000,6000,8000), labels = c("2k", "4k","6k","8k"))+
+  theme_classic(12)+
+  theme_linedraw() +
+  xlab("Contributing Factors for Vehicle Collisions") +
+  ylab("Contributing Factors for Vehicle Collisions in Different Boroughs")+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
+g2
+```
+The above cleveland dot plot different Contributing factors ranked by number of vehicle collisions in different boroughs, we can see that most accidents in 2020 are primarily caused by Driver Inattention by in each borough. Among all, Brooklyn have the biggest number of accidents caused by Driver Inattention. And Queens has almost the same number of accidents caused by Driver Inattention as well. Next come the contributing factor of Following too closely(6.72%), Failure to yield right-of-way.
+
+```{r}
+Number_of_person_killed_table <- 
+  mvc_df %>%
+  drop_na(VTC1) %>%
+  drop_na(X.PK) %>%
+  group_by(VTC1) %>%
+  summarise(Number_of_person_killed = sum(X.PK)) %>%
+  arrange(desc(Number_of_person_killed))
+
+Number_of_person_injured_table <- mvc_df %>%
+  drop_na(VTC1) %>%
+  drop_na(X.PI) %>%
+  group_by(VTC1) %>%
+  summarise(Number_of_person_injured = sum(X.PI)) %>%
+  arrange(desc(Number_of_person_injured)) 
+
+merged_table <- merge(Number_of_person_killed_table, Number_of_person_injured_table, by = "VTC1")
+merged_table2 <- merged_table %>%
+  filter( (Number_of_person_injured) > 0 )
+
+rate <- mvc_df %>% 
+  summarise(injured_rate = sum(X.PI)/(sum(X.PK)+sum(X.PI)))
+
+bt <- function(Number_of_person_killed, Number_of_person_injured) binom.test(x = Number_of_person_injured, n = Number_of_person_killed + Number_of_person_injured, p = rate[,1])$p.value
+
+merged_table3 <-  merged_table2 %>%
+  mutate(pvalue = map2_dbl(Number_of_person_killed, Number_of_person_injured, bt)) %>%
+  mutate(Type = case_when((pvalue <= .1) & (Number_of_person_injured > 20*Number_of_person_killed) ~ "Mild",
+                          (pvalue <= .1) & (20*Number_of_person_killed > Number_of_person_injured) ~ "Severe",
+                          TRUE ~ "Neutral")) %>% 
+  mutate(Type = fct_relevel(Type, "Severe", "Neutral", "Mild"))
+
+merged_table3 %>%
+  mutate(label = ifelse(pvalue <= .1, VTC1, "")) %>%
+  ggplot(aes(log(Number_of_person_injured+1), log(Number_of_person_killed+1), label = label, color = Type)) +
+  scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
+  geom_point(size = 1) +
+  geom_text(size = 4, nudge_y = -0.1, show.legend = FALSE) +
+  ggtitle("Number of Person Killed vs. Number of Person Injured by Vehicle Type") +
+  xlab("Log-transformed Total Number of Person Injured") +
+  ylab("Log-transformed Total Number of Person Killed") +
+  theme_linedraw() + 
+  theme_classic(12)+
+  theme(legend.position = "top")
+
+```
+
+We did a null hypothesis test on using H0: p = 0.006 and H0: p = 0.006, which is the average possibility of the death ratio in 2020, and categorized the vehicle types into severe, neutral, and mild to rank the severity of the vehicles collisions based on its likelihood of resulting in death. 
+
+From the above scatterplot, we can see that several vehicle types that would are more likely to lead to death rather than just Injury are Motorcycle, Concrete Mixer, Flat Rack, Fork lift, etc. On the Contrary, some of those types that are less likely to cause deaths rather than injuries are Bike, E-scooters, Sedan, etc.
+
+
+```{r}
+Number_of_person_killed_CFV1_table <- 
+  mvc_df %>%
+  drop_na(CFV1) %>%
+  drop_na(X.PK) %>%
+  group_by(CFV1) %>%
+  summarise(Number_of_person_killed = sum(X.PK)) %>%
+  arrange(desc(Number_of_person_killed))%>%
+  slice(1:20)
+
+Number_of_person_injured_CFV1_table <- mvc_df %>%
+  drop_na(CFV1) %>%
+  drop_na(X.PI) %>%
+  group_by(CFV1) %>%
+  summarise(Number_of_person_injured = sum(X.PI)) %>%
+  arrange(desc(Number_of_person_injured))%>%
+  slice(1:20)
+
+merged_table <- merge(Number_of_person_killed_CFV1_table, Number_of_person_injured_CFV1_table, by = "CFV1")
+
+merged_table2 <- merged_table 
+
+merged_table3 <-  merged_table2 %>%
+  mutate(pvalue = map2_dbl(Number_of_person_killed, Number_of_person_injured, bt)) %>%
+  mutate(Type = case_when(pvalue <= .1 & Number_of_person_injured > 100*Number_of_person_killed ~ "Mild",
+                          pvalue <= .1 & 100*Number_of_person_killed > Number_of_person_injured ~ "Severe",
+                          TRUE ~ "Neutral")) %>% 
+  mutate(Type = fct_relevel(Type, "Severe", "Neutral", "Mild"))
+
+merged_table3 %>%
+  mutate(label = ifelse(pvalue <= .1, CFV1, "")) %>%
+  ggplot(aes(log(Number_of_person_injured+1), log(Number_of_person_killed+1), label = label, color = Type)) +
+  geom_point(size = 1) +
+  scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
+  geom_text(size = 4, nudge_y = -0.1, show.legend = FALSE) +
+  ggtitle("Number of person killed vs. Number of person injured by different contributing factor") +
+  xlab("Log-transformed Number of Person Injured in 2020") +
+  ylab("Log-transformed Number of Person Killed in 2020") +
+  theme_linedraw() +
+  xlim(5, 10) + 
+  theme_classic(12)+
+  theme(legend.position = "top")
+
+```
+
+We also did the same null hypothesis test on the death ratio by different contribution factors and rank the severity of the vehicles collisions based on their likelihoods of resulting in death. 
+
+From the above scatter plot, we can see that four of the most severe vehicle collision contributing factors that are more likely to lead to death are Unsafe speed, Traffic Control Disregarded, Pedestrian/Bicyclist/Other Pedestrian Error/Confusion. On the Contrary, those factors that are less likely to cause deaths rather than injuries are following too closely, failure to yield right-of-way, and driver inattention/distraction.
+
+
+```{r}
+library(ggmap)
+library(forcats)
+```
+
+```{r}
+myKey <- 'AIzaSyDkuuEC-7BpOHVNetpXBZa0opK3-L6rrt0'
+register_google(key = myKey)
+```
+
+
+```{r}
+NYmap <- get_map(location= 'New York City',zoom = 11)
+
+mvc_df_loc <- mvc_df %>%
+  filter(LONG != 0) %>%
+  filter(LAT != 0)
+
+ggmap(NYmap) + 
+  geom_point(data=mvc_df_loc,aes(x=LONG,y=LAT, color = "r"),size=.15,alpha=.05) + 
+  facet_wrap(~BOR,nrow = 2) + 
+  theme(legend.position="None") +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle('Scatterplot for Vehicle Collision by Borough in New York in 2020')
+
+```
+
+In order to see whether any data points has been mistakenly recorded as well as observing whether the missing values for borough would have any geographical patterns, we plot the location of vehicle collisions on the map after removing all location with longitude and latitude with the magnitude of 0 since those collisions would be otherwise happened on the Null Island. And the reason why we plotted them by facet instead of only color categories was that the missing values patterns may be possibly overlapped by other points, which makes it harder to obverse. Meanwhile, it would be better for determing whether there are mistakenly coded positions for each borough.
+
+From the above map, we can see that the borough for all vehicle collisions seem to be recorded correctly. For the missing value plots, we can clearly see a large number of those collisions seems to be happened on the intersection of boroughs or on the boundary of the island while there are also some other points that are evenly distributed on the map, which means we may probably drop those NA values from geographic perspectives.
+
+```{r}
+g1 <-ggmap(NYmap) +
+  stat_density2d(data = mvc_df_loc,
+                 aes(x = LONG, y = LAT,fill = ..level.., alpha = ..level..), 
+                 geom = "polygon") +
+  scale_fill_gradient(low = "green", high = "red") + 
+  scale_alpha(range = c(0, 0.75), guide = 'none') +
+  ggtitle('Vehicle Collision Heatmap in New York in 2020')+
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position="left")+
+  xlab("Longitude") +
+  ylab("Latitude")
+
+g2<- ggmap(NYmap)  + 
+  stat_density2d(data = mvc_df_loc[which(mvc_df_loc$X.PK >= 1),],
+                 aes(x = LONG, y = LAT,fill = ..level.., alpha = ..level..), 
+                 geom = "polygon") + 
+  geom_point(data=mvc_df_loc[which(mvc_df_loc$X.PK >= 1),],aes(x=LONG,y=LAT),size=.4,alpha=1)+
+  scale_fill_gradient(low = "green", high = "red") + 
+  scale_alpha(range = c(0, 0.75), guide = 'none') +
+  ggtitle('Vehicle Collision Heatmap for Accidents Caused Death in New York in 2020')+
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        legend.position="left")+
+  xlab("Longitude") +
+  ylab("Latitude")
+par(mfrow=c(2,1))
+g1
+g2
+```
+
+The first plot above shows the density of vehicle collisions happened in New York in 2020. We can see that the most accident occurred most frequently at Bronx Boroughs while the Staten Island seems to have the least accidents occurred in 2020. 
+
+The second plot shows the density of vehicle collisions that caused death in New York in 2020 with actually locations of those collisions shown as dots on the heatmap. We can see that it has almost the same distribution as the first heatmap, which occurred most frequently at Bronx Boroughs and least frequently at Staten Island.
+
+## Impact of Contributing Factors and Vehicle Type on People Injured
+
+Plot 1: Contributing Factors for accidents based on the vehicle type with the number of people injured
+
+Question1: Which contributing factors affect each of the vehicles the most, based on the number of people injured in the accidents?
+
+```{r, fig.height = 8, fig.width = 8}
+library(RColorBrewer)
+
+street_noNA <- mvc_df %>%
+  drop_na("VTC1") %>%
+  drop_na("CFV1")
+
+df3 <- street_noNA %>%
+  filter(CFV1!= 'Unspecified')  %>%
+  group_by(VTC1, CFV1) %>%
+  mutate(num_vtc1 = n()) %>%
+  arrange(num_vtc1)%>%
+  filter(num_vtc1 > 80) %>%
+  summarize(count_f=sum(X.PI))
+
+getPalette = colorRampPalette(brewer.pal(9, "Blues"))
+
+p3 <- ggplot(df3, aes(x= VTC1, y=CFV1))+
+               geom_tile(aes(fill=count_f),  colour="white")+
+  geom_text(aes(label=count_f)) +
+  xlab("Vehicle Type") +
+  ylab("Contributing Vehicle Factor") +
+  ggtitle("Contributing Factors for accidents based on the vehicle type")+
+  scale_fill_gradient(name = "Scale",
+                      high = "#C82538",
+                      low = "#B7FFBF") +
+  guides(fill = guide_colourbar(title="Number of injured"))+
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))+
+  scale_x_discrete(label=abbreviate) +  
+  theme_classic(12) +
+  theme(legend.position="bottom")
+
+p3 
+```
+
+This plot - Heatmap gives an indication of contributing factor with respect to each vehicle type which result in the most number of injury cases in the New York City.
+
+We can observe from the graph that in case of Sedan as the vehicle type, most of the number of injured cases have taken place (approx 5600) when the driver was inattentive, followed by failure yield right of way(approx 2089), and Following to closely. With this insight, the police can make sure that when they are inspecting a Sedan on accident, they can check if the driver in the seat is attentive or not. Also,We observe that for all types of vehicles, Driver inattentiveness is a major factor for the injury of the person on road (cyclist, motorist or pedestrian). Another observation we notice is that most of the contributing factors of the injury is for the vehicle Sedan. After Sedan, Ports Utility Vehicle shows the maximum number of injury cases for the same 3 reasons that the sedan has shown. So keeping a check on those three factors of accidents can help reduce the number of injuries in the accidents.
+
+## Impact of Street Locations On Number of People Injured
+
+Plot 2: Top 15 streets in each borough based on the number of injured cases in New York.
+Question2 : Which of the top 15 streets in each of the Boroughs in New York have the maximum number of injured cases?
+
+```{r, fig.height = 10, fig.width = 8}
+ppl_killed_area_noNA <- mvc_df %>% drop_na("BOR")
+
+df4 <- ppl_killed_area_noNA %>% drop_na("ONSN")
+df5 <- df4 %>% group_by(BOR, ONSN) %>%
+                      summarize(total_injured = sum(as.numeric(X.PI))) %>%
+  top_n(15,total_injured)
+
+plot1 <-
+  df5 %>%
+  ungroup %>%
+  mutate(BOR = as.factor(BOR),ONSN = reorder_within(ONSN, total_injured, BOR))%>%
+  ggplot(aes(ONSN, total_injured, fill = BOR)) +
+  geom_bar(stat='identity', fill="#E1BE6A") +
+  facet_wrap(~BOR, scales = "free_y", nrow = 5) +
+  coord_flip() +
+  scale_x_reordered() +
+  scale_y_continuous(breaks = c(25, 50,75,100,125))+
+  theme_classic(12) +
+  xlab("On Street Name") +
+  ylab("Number of Injuries Collisions")
+plot1
+```
+
+This is plot which shows the top 15 streets in each borough where maximum number of people have got injured compared to the other streets and avenues in that borough. From the plot we can observe that in Bronx and Brooklyn there are more number of people getting injured compared to the other parts of New York, namely the Manhattan, Queens and Staten Island. Staten Island has the least number of injury cases. 
+
+On inspecting the plot, we can notice that in Bronx - Bruckner Boulevard is the street where most number of injury cases come from, in case of Brooklyn its the Atlantic Avenue, for Manhattan, 2nd Avenue shows the maximum number of injury cases with over 110 injuries, for Queens, Queens Boulevard shows the maximum number of injury cases for the entire Queens Borough, and finally in Staten Island, Hylan Boulevard has the maximum number of injury cases with over 100 injuries. It can also be noticed that in Staten Island, this is the only street having such high number of accidents, so if additional preventive measures are taken, then this number can be brought down. Keeping a check on these streets in each of the borough, can drastically reduce the number of injuries in the accidents overall in the city of New York.
+
+## Impact of borough on Number and Type of People Injured and Killed
+
+Plot 3: For each of the borough, how many pedestrians, motorist, cyclist have been injured and killed. 
+Question 3: For each of the boroughs, how many pedestrians, motorists, cyclists have been injured and killed based on the vehicle type?
+
+```{r, fig.height = 5, fig.width= 8}
+
+mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
+df_new <- mvc_df %>%
+  drop_na("BOR")
+df_new <- mvc_df %>% 
+  drop_na("VTC1")
+
+df_new <- aggregate(cbind(X.PI, X.PK, X.CI,X.CK,X.PEDI,X.PEDK,X.MI,X.MK) ~ VTC1, data = mvc_df, FUN = sum, na.rm = TRUE)
+
+df_new$BOR <- mvc_df$BOR[match(df_new$VTC1, mvc_df$VTC1)]
+
+df_new = subset(df_new, df_new$X.PI > 1)
+
+```
+
+```{r, fig.height = 5, fig.width= 8}
+p1 <- ggparcoord(df_new,columns=2:9, 
+           scale="globalminmax",
+           groupColumn="BOR",
+           showPoints = TRUE,
+           title = "Parallel Coordinate Plot for number of people injured in BOR")+
+  theme_classic(14)
+
+
+p2 <- ggparcoord(df_new,columns=2:9, 
+           scale="uniminmax",
+           groupColumn="BOR",
+           showPoints = TRUE,
+           title = "Parallel Coordinate Plot for number of people injured in BOR") +
+  theme_classic(14)
+
+p1
+p2
+
+```
+
+This is a parallel coordinate plot, which shows the for a number of vehicles, number of cyclist injured, cyclist killed, pedestrians injured, pedestrians killed, motorist injured, motorist killed, total number of people injured and total number of people killed per each of the five borough.
+
+For the plot we can see that pickup trucks from Bronx has injured the most number of people ~ close to 800 people - it has hit around 530 motorists, 75 cyclists, 170 pedestrians , while killing 4 of them - 2 pedestrians, 1 motorist, 1 cyclist . Vehicle Buses from Queens has killed the maximum number of people (close to 9). Pickup Trucks from Bronx have injured the maximum number of cyclists. Maximum number of motorists- 2 have been killed by Convertible and Motor scooter.
