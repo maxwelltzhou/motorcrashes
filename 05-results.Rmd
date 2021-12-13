@@ -127,6 +127,8 @@ The above graph shows the change in the number of total crashes, number of peopl
 
 ## Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations
 
+The second question comes to: Which are some contributing factors and vehicle types that contribute to most accidents?
+
 ```{r, fig.width = 7, fig.height = 7}
 library(tidytext)
 proportion_VTC1 <- mvc_df %>%
@@ -190,7 +192,10 @@ g2 <- proportion_CFV1 %>%
         panel.grid.minor.x = element_blank())
 g2
 ```
+
 The above cleveland dot plot different Contributing factors ranked by number of vehicle collisions in different boroughs, we can see that most accidents in 2020 are primarily caused by Driver Inattention by in each borough. Among all, Brooklyn have the biggest number of accidents caused by Driver Inattention. And Queens has almost the same number of accidents caused by Driver Inattention as well. Next come the contributing factor of Following too closely(6.72%), Failure to yield right-of-way.
+
+Then, we tried to answer the following question: Among all the contributing factors or vehicle types, which are more likely to cause deaths rather than injuries in these accidents?   
 
 ```{r}
 Number_of_person_killed_table <- 
@@ -222,9 +227,10 @@ merged_table3 %>%
   mutate(label = ifelse(pvalue <= .01, VTC1, "")) %>%
   ggplot(aes(log(Number_of_person_injured+1), log(Number_of_person_killed+1), label = label, color = Type)) +
   scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
+  xlim(0, 12.5)+
   geom_point(size = 1) +
-  geom_text(size = 4, nudge_y = -0.1, show.legend = FALSE) +
-  ggtitle("Number of Person Killed vs. Number of Person Injured by Vehicle Type") +
+  geom_text(size = 3.5, nudge_y = -0.1, show.legend = FALSE) +
+  ggtitle("Number of Person Killed vs. Injured by Different Vehicle Types") +
   xlab("Log-transformed Total Number of Person Injured") +
   ylab("Log-transformed Total Number of Person Killed") +
   theme_linedraw() + 
@@ -269,7 +275,7 @@ merged_table3 %>%
   geom_point(size = 1) +
   scale_color_manual(values=c("#DC3220","#E1BE6A","#005AB5")) +
   geom_text(size = 4, nudge_y = -0.1, show.legend = FALSE) +
-  ggtitle("Number of person killed vs. Number of person injured by different contributing factor") +
+  ggtitle("Number of Person Killed vs. Injured by Different Contributing Factors") +
   xlab("Log-transformed Number of Person Injured in 2020") +
   ylab("Log-transformed Number of Person Killed in 2020") +
   theme_linedraw() +
@@ -282,6 +288,9 @@ We also did the same null hypothesis test on the death ratio by different contri
 
 From the above scatter plot, we can see that the top three most severe vehicle collision contributing factors that are more likely to lead to death are Unsafe speed, Traffic Control Disregarded, and Pedestrian/Bicyclist/Other Pedestrian Error/Confusion. On the Contrary, those factors that are less likely to cause deaths rather than injuries are following too closely, failure to yield right-of-way, and driver inattention/distraction.
 
+## Impact of Geographic Locations on the Number of Accidents and Deaths
+
+Then, we tried to answer the following two questions: Is there any obvious geographic information of the accidents recorded by mistakes  in 2020 in New York? And are there any patterns on the distribution of those accidents in New York in 2020? 
 
 ```{r}
 library(ggmap)
@@ -305,7 +314,7 @@ ggmap(NYmap) +
   theme(legend.position="None") +
   xlab("Longitude") +
   ylab("Latitude") +
-  ggtitle('Scatterplot for Vehicle Collision by Borough in New York in 2020')
+  ggtitle('Vehicle Collision by Borough in New York in 2020')
 ```
 
 In order to see whether any data points has been mistakenly recorded as well as observing whether the missing values for borough would have any geographical patterns, we plot the location of vehicle collisions on the map after removing all location with longitude and latitude with the magnitude of 0 since those collisions would be otherwise happened on the Null Island. And the reason why we plotted them by facet instead of only color categories was that the missing values patterns may be possibly overlapped by other points, which makes it harder to obverse. Meanwhile, it would be better for determing whether there are mistakenly coded positions for each borough.
@@ -319,7 +328,7 @@ g1 <-ggmap(NYmap) +
                  geom = "polygon") +
   scale_fill_gradient(low = "green", high = "red") + 
   scale_alpha(range = c(0, 0.75), guide = 'none') +
-  ggtitle('Vehicle Collision Heatmap in New York in 2020')+
+  ggtitle('Heatmap for Accidents in New York in 2020')+
   theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position="left")+
@@ -332,7 +341,7 @@ g2<- ggmap(NYmap)  +
   geom_point(data=mvc_df_loc[which(mvc_df_loc$X.PK >= 1),],aes(x=LONG,y=LAT),size=.4,alpha=1)+
   scale_fill_gradient(low = "green", high = "red") + 
   scale_alpha(range = c(0, 0.75), guide = 'none') +
-  ggtitle('Vehicle Collision Heatmap for Accidents Caused Death in New York in 2020')+
+  ggtitle('Heatmap for Accidents Caused Death in New York in 2020')+
   theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         legend.position="left")+
@@ -349,9 +358,7 @@ The second plot shows the density of vehicle collisions that caused death in New
 
 ## Impact of Contributing Factors and Vehicle Type on People Injured
 
-Plot 1: Contributing Factors for accidents based on the vehicle type with the number of people injured
-
-Question1: Which contributing factors affect each of the vehicles the most, based on the number of people injured in the accidents?
+Which contributing factors affect each of the vehicles the most, based on the number of people injured in the accidents?
 
 ```{r, fig.height = 8, fig.width = 8}
 library(RColorBrewer)
@@ -359,8 +366,10 @@ street_noNA <- mvc_df %>%
   drop_na("VTC1") %>%
   drop_na("CFV1")
 df3 <- street_noNA %>%
+  mutate(CFV1 = replace(CFV1, CFV1 == "Pedestrian/Bicyclist/Other Pedestrian Error/Confusion", "Pedestrian Error/Confusion")) %>%
   filter(CFV1!= 'Unspecified')  %>%
   group_by(VTC1, CFV1) %>%
+  
   mutate(num_vtc1 = n()) %>%
   arrange(num_vtc1)%>%
   filter(num_vtc1 > 80) %>%
@@ -379,7 +388,7 @@ p3 <- ggplot(df3, aes(x= VTC1, y=CFV1))+
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1))+
   scale_x_discrete(label=abbreviate) +  
   theme_classic(12) +
-  theme(legend.position="bottom")
+  theme(legend.position="right")
 p3 
 ```
 
@@ -389,8 +398,7 @@ We can observe from the graph that in case of Sedan as the vehicle type, most of
 
 ## Impact of Street Locations On Number of People Injured
 
-Plot 2: Top 15 streets in each borough based on the number of injured cases in New York.
-Question2 : Which of the top 15 streets in each of the Boroughs in New York have the maximum number of injured cases?
+Which of the top 15 streets in each of the Boroughs in New York have the maximum number of injured cases?
 
 ```{r, fig.height = 10, fig.width = 8}
 ppl_killed_area_noNA <- mvc_df %>% drop_na("BOR")
@@ -418,39 +426,5 @@ This is plot which shows the top 15 streets in each borough where maximum number
 
 On inspecting the plot, we can notice that in Bronx - Bruckner Boulevard is the street where most number of injury cases come from, in case of Brooklyn its the Atlantic Avenue, for Manhattan, 2nd Avenue shows the maximum number of injury cases with over 110 injuries, for Queens, Queens Boulevard shows the maximum number of injury cases for the entire Queens Borough, and finally in Staten Island, Hylan Boulevard has the maximum number of injury cases with over 100 injuries. It can also be noticed that in Staten Island, this is the only street having such high number of accidents, so if additional preventive measures are taken, then this number can be brought down. Keeping a check on these streets in each of the borough, can drastically reduce the number of injuries in the accidents overall in the city of New York.
 
-## Impact of borough on Number and Type of People Injured and Killed
 
-Plot 3: For each of the borough, how many pedestrians, motorist, cyclist have been injured and killed. 
-Question 3: For each of the boroughs, how many pedestrians, motorists, cyclists have been injured and killed based on the vehicle type?
 
-```{r, fig.height = 5, fig.width= 8}
-mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
-df_new <- mvc_df %>%
-  drop_na("BOR")
-df_new <- mvc_df %>% 
-  drop_na("VTC1")
-df_new <- aggregate(cbind(X.PI, X.PK, X.CI,X.CK,X.PEDI,X.PEDK,X.MI,X.MK) ~ VTC1, data = mvc_df, FUN = sum, na.rm = TRUE)
-df_new$BOR <- mvc_df$BOR[match(df_new$VTC1, mvc_df$VTC1)]
-df_new = subset(df_new, df_new$X.PI > 1)
-```
-
-```{r, fig.height = 5, fig.width= 8}
-p1 <- ggparcoord(df_new,columns=2:9, 
-           scale="globalminmax",
-           groupColumn="BOR",
-           showPoints = TRUE,
-           title = "Parallel Coordinate Plot for number of people injured in BOR")+
-  theme_classic(14)
-p2 <- ggparcoord(df_new,columns=2:9, 
-           scale="uniminmax",
-           groupColumn="BOR",
-           showPoints = TRUE,
-           title = "Parallel Coordinate Plot for number of people injured in BOR") +
-  theme_classic(14)
-p1
-p2
-```
-
-This is a parallel coordinate plot, which shows the for a number of vehicles, number of cyclist injured, cyclist killed, pedestrians injured, pedestrians killed, motorist injured, motorist killed, total number of people injured and total number of people killed per each of the five borough.
-
-For the plot we can see that pickup trucks from Bronx has injured the most number of people ~ close to 800 people - it has hit around 530 motorists, 75 cyclists, 170 pedestrians , while killing 4 of them - 2 pedestrians, 1 motorist, 1 cyclist . Vehicle Buses from Queens has killed the maximum number of people (close to 9). Pickup Trucks from Bronx have injured the maximum number of cyclists. Maximum number of motorists- 2 have been killed by Convertible and Motor scooter.
