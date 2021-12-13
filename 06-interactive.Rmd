@@ -1,3 +1,5 @@
 # Interactive component
 
+<iframe src="resources/Interactive.html" width="675" height="475"></iframe>
 
+Our interactive bar plot presents our data in an animated format that allows the user to gain insights that would be hard to visualize using static graphs. The plot takes in data that is generated from our 2020 motor vehicle crashes dataset and investigates the relationship between time of day and the number of crashes that happen during those hours. It also allows user to freely switch between a single day of the week and the total for the entire year by clicking the buttons at the top of the page. After clicking the button, the bar and axes dynamically shift to represent the new day's data values and the user is able to how the relative distribution of number of crashes changes from day to day for each hour. For example, we can see that there are relatively more crashes in the early morning hours on Sundays than on Mondays. 
