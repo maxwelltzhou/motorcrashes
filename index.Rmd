@@ -16,6 +16,8 @@ A motor vehicle accident can have a large number of factors that lead to it.  We
 
 3. Is there any obvious geographic information of the accidents recorded by mistakes in 2020 in New York? And are there any patterns on the distribution of those accidents in New York in 2020?
 
-4. What contributing factors cause the most numbers of people injured and killed in accidents? What are the top 15 streets in each New York City borough by number of people injured and killed? Are there any patterns in the most dangerous streets?
+4. What are the top 15 streets in each New York City borough by number of people injured and killed? Are there any patterns in the most dangerous streets?
+
+5. What contributing factors cause the most numbers of people injured and killed in accidents?
 
 By analyzing this dataset in depth, we can help to answer the questions above. The answers to those questions will allow the streets of New York City to be a safer place for everyone. 
