@@ -298,7 +298,7 @@ library(forcats)
 ```
 
 ```{r}
-myKey <- 'AIzaSyDkuuEC-7BpOHVNetpXBZa0opK3-L6rrt0'
+myKey <- 'Your Key'
 register_google(key = myKey)
 ```
 
