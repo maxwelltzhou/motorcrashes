@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,10 +74,23 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#why-and-how-is-it-collected"><i class="fa fa-check"></i><b>2.1</b> Why and how is it collected?</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#the-data-we-would-work-on"><i class="fa fa-check"></i><b>2.2</b> The data we would work on:</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#problemsissues"><i class="fa fa-check"></i><b>2.3</b> Problems/Issues:</a></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#a-brief-overview-of-the-dataset"><i class="fa fa-check"></i><b>2.4</b> A brief overview of the dataset:</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#impact-of-time-of-day-and-day-of-the-week-on-crashes"><i class="fa fa-check"></i><b>5.1</b> Impact of Time of Day and Day of the Week on Crashes</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#impact-of-vehicle-types-and-contributing-factors-on-crashes-at-different-locations"><i class="fa fa-check"></i><b>5.2</b> Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#impact-of-geographic-locations-on-the-number-of-accidents-and-deaths"><i class="fa fa-check"></i><b>5.3</b> Impact of Geographic Locations on the Number of Accidents and Deaths</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#impact-of-contributing-factors-and-vehicle-type-on-people-injured"><i class="fa fa-check"></i><b>5.4</b> Impact of Contributing Factors and Vehicle Type on People Injured</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#impact-of-street-locations-on-number-of-people-injured"><i class="fa fa-check"></i><b>5.5</b> Impact of Street Locations On Number of People Injured</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -102,19 +115,20 @@
 <div id="header">
 <h1 class="title">NYC Motor Vehicle Crashes Analysis</h1>
 <p class="author"><em>Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy</em></p>
-<p class="date"><em>2021-11-19</em></p>
+<p class="date"><em>2021-12-12</em></p>
 </div>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>A motor vehicle accident can have a large number of factors that lead to it. A collection of a series of such accidents and understanding the pattern (if any) with respect to the location of the accident, the time at which the accident has taken place and other contributing factors like which vehicle has collided with the motor vehicle that led to the accident can help us understand the correlation between these factors and the accident. This information can be of great insight to both the common people and the police officers, if perceived in the right way. Firstly, it helps the common man by giving a caveat to be more cautious while driving around the accident prone area at a particular point of time. Secondly, it would help police officers in two ways - to keep and check on safety of the people, by monitoring the contributing factors of the accident in the accident prone locations at a particular time and also, to manage their manpower well, more police officers can be put to work at accident prone areas compared to the other areas. This is driving factor behind the project that we aim to work on, to study the pattern of motor vehicle accidents that take place in New York City to help understand and organise resources to reduce accidents</p>
-<p>With this study, we try to answer the following questions:</p>
+<p>A motor vehicle accident can have a large number of factors that lead to it. We can study a large sample of these accidents that occur in New York City and try to further understand any patterns in the data. Factors such as the location of the accident, the time at which the accident occurs, and other contributing factors (vehicle types involved in the accident, the reason for the occurrence of the accident, etc.) can help us understand and visualize the causes and effects of these accidents in greater depth. This information can be of great insight to drivers, motorists, pedestrians, and even police officers. First, it helps the normal people by allowing them to be more cautious while driving around accident prone areas during certain time periods. Second, it would help police officers in two ways - to help them in protecting the safety of the pedestrians and other people in the area by monitoring the contributing factors of the accident in the accident prone locations at a particular time and also, to manage their manpower well (more police officers can be put to work at accident prone areas compared to the other areas). This is the driving factor behind the project that we aim to work on: to study the pattern of motor vehicle accidents that take place in New York City to help understand and organize resources to reduce accidents. Besides, our study could help the public to be aware of the most deadly accidents caused by different vehicle types and contributing factors and potentially reduce the occurrence of those accidents.</p>
+<p><strong>With this study, we try to answer the following questions:</strong></p>
 <ol style="list-style-type: decimal">
-<li><p>Is the number of people injured or killed by motor vehicle accidents impacted by the time and day at which the accident has occurred.</p></li>
-<li><p>Are there any underlying contributing reasons that are resulting in more accidents?</p></li>
-<li><p>Does the severity of the accident have a correlation with the location at which it has taken place? For instance, do accidents in Manhattan have a higher death ratio compared to accidents in the Bronx?</p></li>
-<li><p>Is there any pattern of the vehicles that hit the motor vehicles? For instance, do they get hit by sedans more than trucks?</p></li>
+<li><p>How does the time of day and the day of the week impact the total number of accidents that occur and number of people injured or killed in those accidents?</p></li>
+<li><p>Which are some contributing factors and vehicle types that contribute to most accidents? Among all the contributing factors or vehicle types, which are more likely to cause deaths rather than injuries in these accidents?</p></li>
+<li><p>Is there any obvious geographic information of the accidents recorded by mistakes in 2020 in New York? And are there any patterns on the distribution of those accidents in New York in 2020?</p></li>
+<li><p>What are the top 15 streets in each New York City borough by number of people injured and killed? Are there any patterns in the most dangerous streets?</p></li>
+<li><p>What contributing factors cause the most numbers of people injured and killed in accidents?</p></li>
 </ol>
-<p>Analysis of the dataset to answer these questions would give us a better insight about how the common man can be more careful to avoid accidents and also to the police in ensuring our safety.</p>
+<p>By analyzing this dataset in depth, we can help to answer the questions above. The answers to those questions will allow the streets of New York City to be a safer place for everyone.</p>
 
 </div>
             </section>

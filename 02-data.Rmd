@@ -1,6 +1,6 @@
 # Data sources
 
-The dataset chosen for this study is taken from the NYC Open Data. It is owned by NYC Open Data and is provided by the New York Police Department(NYPD). The dataset is a table where each row of the table represents a crash event. It contains the information from all the police reported motor vehicle collisions in NYC.  In cases where someone is injured or killed, or a damage worth $1000 a police report is required - MV104-AN.  The dataset is subjected to change where there is any update in the police report  (MV104-AN) with the revised crash details.  It was created in April, 2014 and is a large dataset with 1.84Million entries and 29 columns.
+The dataset chosen for this study is taken from the NYC Open Data. It is owned by NYC Open Data and is provided by the New York Police Department(NYPD). The dataset is a table where each row of the table represents a crash event. It contains the information from all the police reported motor vehicle collisions in NYC. In cases where someone is injured or killed, or a damage worth $1000 a police report is required - MV104-AN.The dataset is subjected to change where there is any update in the police report (MV104-AN) with the revised crash details.It was created in April, 2014 and is a large dataset with 1.84Million entries and 29 columns.
 
 ## Why and how is it collected?
 

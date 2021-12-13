@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,10 +74,23 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#why-and-how-is-it-collected"><i class="fa fa-check"></i><b>2.1</b> Why and how is it collected?</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#the-data-we-would-work-on"><i class="fa fa-check"></i><b>2.2</b> The data we would work on:</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#problemsissues"><i class="fa fa-check"></i><b>2.3</b> Problems/Issues:</a></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#a-brief-overview-of-the-dataset"><i class="fa fa-check"></i><b>2.4</b> A brief overview of the dataset:</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#impact-of-time-of-day-and-day-of-the-week-on-crashes"><i class="fa fa-check"></i><b>5.1</b> Impact of Time of Day and Day of the Week on Crashes</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#impact-of-vehicle-types-and-contributing-factors-on-crashes-at-different-locations"><i class="fa fa-check"></i><b>5.2</b> Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#impact-of-geographic-locations-on-the-number-of-accidents-and-deaths"><i class="fa fa-check"></i><b>5.3</b> Impact of Geographic Locations on the Number of Accidents and Deaths</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#impact-of-contributing-factors-and-vehicle-type-on-people-injured"><i class="fa fa-check"></i><b>5.4</b> Impact of Contributing Factors and Vehicle Type on People Injured</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#impact-of-street-locations-on-number-of-people-injured"><i class="fa fa-check"></i><b>5.5</b> Impact of Street Locations On Number of People Injured</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -101,9 +114,9 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
-<p><img src="finalproj_files/figure-html/graph%201-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/graph%201-1.png" width="768" /></p>
 <p>This is our missing values plot on the entire cleaned 2020 motor vehicle crashes data set. We can see that our dataset contains many different columns (29 columns) and a plethora of missing values across the majority of the columns. Because we have so many columns and rows (112,890 rows), this leads us to have an extremely large amount of missing patterns that appear in our dataset. As a result, it is very hard to see individual rows and columns in our missing data plot because of how great the number of different missing patterns are. The plot below shows the same missing patterns plot, but only including the most frequently appearing missing patterns and also removing the columns that do not have any missing values. This way, we can further examine the missing patterns that appear more commonly in our dataset.</p>
-<p><img src="finalproj_files/figure-html/graph%202-1.png" width="672" /></p>
+<p><img src="finalproj_files/figure-html/graph%202-1.png" width="768" /></p>
 <p>Now that we have only selected the columns containing missing values (we already know that all of the columns removed have no missing values at all) and the missing patterns in our dataset that appear more frequently, we can observe many different patterns in the missing values of our dataset. For example, we have currently selected the top 15 missing patterns because these are the missing patterns with over 1000 missing rows. We observe that the 4 features with the highest percentages of missing rows have all of the top 15 missing patterns.</p>
 <pre><code>##    number_of_features_missing count percentage_missing
 ## 1                           7 28309        25.07662326

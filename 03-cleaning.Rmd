@@ -36,15 +36,14 @@ After subsetting the data set, we can see our new data set now has 112,890 obser
 
 ```{r}
 abbrev <- c("Date","Time","BOR","ZIP","LAT","LONG","LOC","ONSN","CRSN","OFFSN","#PI","#PK","#PEDI","#PEDK","#CI","#CK","#MI","#MK","CFV1","CFV2","CFV3","CFV4","CFV5","id","VTC1","VTC2","VTC3","VTC4","VTC5")
-abbreviation_legend <- cbind(colnames(data2020),abbrev,description)
-colnames(abbreviation_legend) <- c("Original Column Name","Abbreviation","Description")
+abbreviation_legend <- cbind(colnames(data2020),abbrev)
+colnames(abbreviation_legend) <- c("Original Column Name","Abbreviation")
 abbreviation_legend
 
 ```
 
 ```{r}
 colnames(data2020) <- c("Date","Time","BOR","ZIP","LAT","LONG","LOC","ONSN","CRSN","OFFSN","#PI","#PK","#PEDI","#PEDK","#CI","#CK","#MI","#MK","CFV1","CFV2","CFV3","CFV4","CFV5","id","VTC1","VTC2","VTC3","VTC4","VTC5")
-colnames(data2020)
 ```
 
 After abbreviating the column names, we saw that a majority of categorical data are all in uppercase. Thus, we decided to convert all of them to lowercase with the first letter capitalized.

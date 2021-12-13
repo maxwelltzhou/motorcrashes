@@ -3,7 +3,7 @@
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
-```{r libraries}
+```{r}
 library(ggplot2)
 library(tidyverse)
 library(gridExtra)
@@ -15,7 +15,7 @@ library(readr)
 library(GGally)
 ```
 
-```{r read dataset}
+```{r}
 mvc_df <- read.csv("resources/Column_Transformed_2020Motor_Vehicle_Collisions_.csv")
 ```
 

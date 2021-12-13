@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,10 +74,23 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#why-and-how-is-it-collected"><i class="fa fa-check"></i><b>2.1</b> Why and how is it collected?</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#the-data-we-would-work-on"><i class="fa fa-check"></i><b>2.2</b> The data we would work on:</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#problemsissues"><i class="fa fa-check"></i><b>2.3</b> Problems/Issues:</a></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#a-brief-overview-of-the-dataset"><i class="fa fa-check"></i><b>2.4</b> A brief overview of the dataset:</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#impact-of-time-of-day-and-day-of-the-week-on-crashes"><i class="fa fa-check"></i><b>5.1</b> Impact of Time of Day and Day of the Week on Crashes</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#impact-of-vehicle-types-and-contributing-factors-on-crashes-at-different-locations"><i class="fa fa-check"></i><b>5.2</b> Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#impact-of-geographic-locations-on-the-number-of-accidents-and-deaths"><i class="fa fa-check"></i><b>5.3</b> Impact of Geographic Locations on the Number of Accidents and Deaths</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#impact-of-contributing-factors-and-vehicle-type-on-people-injured"><i class="fa fa-check"></i><b>5.4</b> Impact of Contributing Factors and Vehicle Type on People Injured</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#impact-of-street-locations-on-number-of-people-injured"><i class="fa fa-check"></i><b>5.5</b> Impact of Street Locations On Number of People Injured</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -101,32 +114,155 @@
             <section class="normal" id="section-">
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
-<p>Still need to change the format for this chapter later.</p>
-<p>The dataset chosen for this study is taken from the NYC Open Data. It is owned by NYC Open Data and is provided by the New York Police Department(NYPD). The dataset is a table where each row of the table represents a crash event. It contains the information from all the police reported motor vehicle collisions in NYC. In cases where someone is injured or killed, or a damage worth $1000 a police report is required - MV104-AN. The dataset is subjected to change where there is any update in the police report (MV104-AN) with the revised crash details. It was created in April, 2014 and is a large dataset with 1.84Million entries and 29 columns.</p>
-<p>Why and how is it collected?</p>
+<p>The dataset chosen for this study is taken from the NYC Open Data. It is owned by NYC Open Data and is provided by the New York Police Department(NYPD). The dataset is a table where each row of the table represents a crash event. It contains the information from all the police reported motor vehicle collisions in NYC. In cases where someone is injured or killed, or a damage worth $1000 a police report is required - MV104-AN.The dataset is subjected to change where there is any update in the police report (MV104-AN) with the revised crash details.It was created in April, 2014 and is a large dataset with 1.84Million entries and 29 columns.</p>
+<div id="why-and-how-is-it-collected" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Why and how is it collected?</h2>
 <p>The police department implemented TrafficStat using the CompStats model to work towards the safety of people and to maintain uniformity in which data related to motor vehicles is collected. Initially, they used a TAMS- Traffic Management Systems to collect traffic data using a few details around the collision, but later on when they decided to work towards the Vision Zero- to ensure zero fatalities, the MV-104AN form was filled in a much more detailed manner for all the vehicle collisions that occured. The TAMS model was eliminated and FORMS - Finest Online Records Management System was introduced in 2016 to store data electronically. The policemen use a department cellphone or computer to enter all the MV-104AN data fields which are stored in the Department crime data warehouse. This ensures that the entire MV-104AN form with all the details is stored securely, which can be used to do a detailed traffic safety analysis to work towards the Vision Zero goal.</p>
-<p>The data we would work on:</p>
-<p>Since the dataset is enormous, we have decided to work on a complete year of data, starting from 1, January 2020 to 31, December 2020. This data contains ______ entries. Studying the recent year of data gives a clear understanding of the latest trends in the collisions, given the growth of traffic every year.</p>
-<p>Problems/Issues:</p>
-<p>A few of the fields in the Dataset are missing which are being imputed/eliminated based on the type of question we plan to answer.</p>
-<p>A brief overview of the dataset:
-Dataset contains 29 attributes, a brief overview of all these are described below:</p>
-<p>Column Name Description
-Crash Date Date of collision
-Crash Time Time of collision
-Borough Place of collision
-Zip Code Postal code where the collision occurred
-Latitude Latitude on Coordinate System
-Longitude Longitude on Global Coordinate System
-On Street Name Street on which collision occurred
-Cross Street Name Nearest cross Street where collision occurred.
-Off Street name Street Address
-Number of people,pedestrians, cyclist, motorist injured Details on the number of people injured in each category
-Number of people,pedestrians, cyclist, motorist killed Details on the number of people killed in each category
-Contributing factors vehicle 1,2,3,4,5 Factors which contribute to the collision
-Collision ID Unique Record code generated by system
-Vehicle Type Code 1,2,3,4,5 Type of vehicle</p>
+</div>
+<div id="the-data-we-would-work-on" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> The data we would work on:</h2>
+<p>Since the dataset is enormous, we have decided to work on a complete year of data, starting from 1, January 2020 to 31, December 2020. This data contains 112890 entries.Studying the recent year of data gives a clear understanding of the latest trends in the collisions, given the growth of traffic every year.</p>
+</div>
+<div id="problemsissues" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Problems/Issues:</h2>
+<p>The missing values of various columns have been mentioned in the Missing chapter of this book(Chapter 4). The dataset is very large(1.8 million rows) as it contains data over various years, so its difficult to use R to visualize and transform the data, we take more about this in the Cleaning chapter of this book(Chapter 3).</p>
+</div>
+<div id="a-brief-overview-of-the-dataset" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> A brief overview of the dataset:</h2>
+<p>Dataset contains 29 attributes, a brief overview of all these are described below:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-3">Table 2.1: </span>DATASET DESCRIPTION</caption>
+<colgroup>
+<col width="39%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Column Name</th>
+<th align="left">Description of column</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Crash Date</td>
+<td align="left">Date of collision</td>
+</tr>
+<tr class="even">
+<td align="left">Crash Time</td>
+<td align="left">Time of collision</td>
+</tr>
+<tr class="odd">
+<td align="left">Borough</td>
+<td align="left">Place of collision</td>
+</tr>
+<tr class="even">
+<td align="left">Zip Code</td>
+<td align="left">Postal code where the collision occurred</td>
+</tr>
+<tr class="odd">
+<td align="left">Latitude</td>
+<td align="left">Latitude on Coordinate System</td>
+</tr>
+<tr class="even">
+<td align="left">Longitude</td>
+<td align="left">Longitude on Global Coordinate System</td>
+</tr>
+<tr class="odd">
+<td align="left">Location</td>
+<td align="left">Latitude , Longitude pair</td>
+</tr>
+<tr class="even">
+<td align="left">On Street Name</td>
+<td align="left">Street on which collision occurred</td>
+</tr>
+<tr class="odd">
+<td align="left">Cross Street Name</td>
+<td align="left">Nearest cross Street where collision occurred.</td>
+</tr>
+<tr class="even">
+<td align="left">Off Street name</td>
+<td align="left">Street Address</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of people injured</td>
+<td align="left">Details on the number of people injured</td>
+</tr>
+<tr class="even">
+<td align="left">Number of pedestrians injured</td>
+<td align="left">Details on the number of pedestrians injured</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of cyclist injured</td>
+<td align="left">Details on the number of cyclist injured</td>
+</tr>
+<tr class="even">
+<td align="left">Number of motorist injured</td>
+<td align="left">Details on the number of motorist injured</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of people killed</td>
+<td align="left">Details on the number of people killed</td>
+</tr>
+<tr class="even">
+<td align="left">Number of pedestrians killed</td>
+<td align="left">Details on the number of pedestrians killed</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of cyclist killed</td>
+<td align="left">Details on the number of cyclist killed</td>
+</tr>
+<tr class="even">
+<td align="left">Number of motorist killed</td>
+<td align="left">Details on the number of motorist killed</td>
+</tr>
+<tr class="odd">
+<td align="left">Contributing factors vehicle 1</td>
+<td align="left">Factor 1 which contribute to the collision</td>
+</tr>
+<tr class="even">
+<td align="left">Contributing factors vehicle 2</td>
+<td align="left">Factor 2 which contribute to the collision</td>
+</tr>
+<tr class="odd">
+<td align="left">Contributing factors vehicle 3</td>
+<td align="left">Factor 3 which contribute to the collision</td>
+</tr>
+<tr class="even">
+<td align="left">Contributing factors vehicle 4</td>
+<td align="left">Factor 4 which contribute to the collision</td>
+</tr>
+<tr class="odd">
+<td align="left">Contributing factors vehicle 5</td>
+<td align="left">Factor 5 which contribute to the collision</td>
+</tr>
+<tr class="even">
+<td align="left">Collision ID</td>
+<td align="left">Unique Record code generated by system</td>
+</tr>
+<tr class="odd">
+<td align="left">Vehicle Type Code 1</td>
+<td align="left">Type of vehicle 1</td>
+</tr>
+<tr class="even">
+<td align="left">Vehicle Type Code 2</td>
+<td align="left">Type of vehicle 2</td>
+</tr>
+<tr class="odd">
+<td align="left">Vehicle Type Code 3</td>
+<td align="left">Type of vehicle 3</td>
+</tr>
+<tr class="even">
+<td align="left">Vehicle Type Code 4</td>
+<td align="left">Type of vehicle 4</td>
+</tr>
+<tr class="odd">
+<td align="left">Vehicle Type Code 5</td>
+<td align="left">Type of vehicle 5</td>
+</tr>
+</tbody>
+</table>
 
+</div>
 </div>
             </section>
 

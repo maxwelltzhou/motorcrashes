@@ -24,7 +24,7 @@
 <meta name="author" content="Maxwell Zhou, Xin Ye, and Kiranmai Vasireddy" />
 
 
-<meta name="date" content="2021-11-19" />
+<meta name="date" content="2021-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -74,10 +74,23 @@
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#why-and-how-is-it-collected"><i class="fa fa-check"></i><b>2.1</b> Why and how is it collected?</a></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#the-data-we-would-work-on"><i class="fa fa-check"></i><b>2.2</b> The data we would work on:</a></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#problemsissues"><i class="fa fa-check"></i><b>2.3</b> Problems/Issues:</a></li>
+<li class="chapter" data-level="2.4" data-path="data-sources.html"><a href="data-sources.html#a-brief-overview-of-the-dataset"><i class="fa fa-check"></i><b>2.4</b> A brief overview of the dataset:</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#impact-of-time-of-day-and-day-of-the-week-on-crashes"><i class="fa fa-check"></i><b>5.1</b> Impact of Time of Day and Day of the Week on Crashes</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#impact-of-vehicle-types-and-contributing-factors-on-crashes-at-different-locations"><i class="fa fa-check"></i><b>5.2</b> Impact of Vehicle Types and Contributing Factors on Crashes at Different Locations</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#impact-of-geographic-locations-on-the-number-of-accidents-and-deaths"><i class="fa fa-check"></i><b>5.3</b> Impact of Geographic Locations on the Number of Accidents and Deaths</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#impact-of-contributing-factors-and-vehicle-type-on-people-injured"><i class="fa fa-check"></i><b>5.4</b> Impact of Contributing Factors and Vehicle Type on People Injured</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#impact-of-street-locations-on-number-of-people-injured"><i class="fa fa-check"></i><b>5.5</b> Impact of Street Locations On Number of People Injured</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -101,7 +114,6 @@
             <section class="normal" id="section-">
 <div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
-<p>Haven’t completed the description for Data Transformation Chapter yet.</p>
 <pre><code>## Number of Rows: 1829491</code></pre>
 <pre><code>## Number of Columns: 29</code></pre>
 <pre><code>## # A tibble: 5 x 29
@@ -119,59 +131,81 @@
 ## #   NUMBER OF CYCLIST KILLED &lt;dbl&gt;, NUMBER OF MOTORIST INJURED &lt;dbl&gt;,
 ## #   NUMBER OF MOTORIST KILLED &lt;dbl&gt;, CONTRIBUTING FACTOR VEHICLE 1 &lt;chr&gt;,
 ## #   CONTRIBUTING FACTOR VEHICLE 2 &lt;chr&gt;, ...</code></pre>
+<p>From a glance at the raw data set, we can see that there are over one million observations for this data set and the whole file would be too large to be uploaded to Github. Thus, we have decided to use the subset data of year 2020.</p>
 <pre><code>## Number of Rows: 112890</code></pre>
 <pre><code>## Number of Columns: 29</code></pre>
-<pre><code>##                    CRASH DATE                    CRASH TIME 
-##                        &quot;CRAD&quot;                        &quot;CRAT&quot; 
-##                       BOROUGH                      ZIP CODE 
-##                        &quot;BORO&quot;                        &quot;ZIPC&quot; 
-##                      LATITUDE                     LONGITUDE 
-##                        &quot;LATI&quot;                        &quot;LONG&quot; 
-##                      LOCATION                ON STREET NAME 
-##                        &quot;LOCA&quot;                        &quot;ONSN&quot; 
-##             CROSS STREET NAME               OFF STREET NAME 
-##                        &quot;CRSN&quot;                        &quot;OFSN&quot; 
-##     NUMBER OF PERSONS INJURED      NUMBER OF PERSONS KILLED 
-##                &quot;NUMBEROFPERI&quot;                &quot;NUMBEROFPERK&quot; 
-## NUMBER OF PEDESTRIANS INJURED  NUMBER OF PEDESTRIANS KILLED 
-##                &quot;NUMBEROFPEDI&quot;                &quot;NUMBEROFPEDK&quot; 
-##     NUMBER OF CYCLIST INJURED      NUMBER OF CYCLIST KILLED 
-##                        &quot;NOCI&quot;                        &quot;NOCK&quot; 
-##    NUMBER OF MOTORIST INJURED     NUMBER OF MOTORIST KILLED 
-##                        &quot;NOMI&quot;                        &quot;NOMK&quot; 
-## CONTRIBUTING FACTOR VEHICLE 1 CONTRIBUTING FACTOR VEHICLE 2 
-##                        &quot;CFV1&quot;                        &quot;CFV2&quot; 
-## CONTRIBUTING FACTOR VEHICLE 3 CONTRIBUTING FACTOR VEHICLE 4 
-##                        &quot;CFV3&quot;                        &quot;CFV4&quot; 
-## CONTRIBUTING FACTOR VEHICLE 5                  COLLISION_ID 
-##                        &quot;CFV5&quot;                        &quot;COLL&quot; 
-##           VEHICLE TYPE CODE 1           VEHICLE TYPE CODE 2 
-##                        &quot;VTC1&quot;                        &quot;VTC2&quot; 
-##           VEHICLE TYPE CODE 3           VEHICLE TYPE CODE 4 
-##                        &quot;VTC3&quot;                        &quot;VTC4&quot; 
-##           VEHICLE TYPE CODE 5 
-##                        &quot;VTC5&quot;</code></pre>
-<pre><code>##  [1] &quot;Date&quot;  &quot;Time&quot;  &quot;BOR&quot;   &quot;ZIP&quot;   &quot;LAT&quot;   &quot;LONG&quot;  &quot;LOC&quot;   &quot;ONSN&quot;  &quot;CRSN&quot; 
-## [10] &quot;OFFSN&quot; &quot;#PI&quot;   &quot;#PK&quot;   &quot;#PEDI&quot; &quot;#PEDK&quot; &quot;#CI&quot;   &quot;#CK&quot;   &quot;#MI&quot;   &quot;#MK&quot;  
-## [19] &quot;CFV1&quot;  &quot;CFV2&quot;  &quot;CFV3&quot;  &quot;CFV4&quot;  &quot;CFV5&quot;  &quot;id&quot;    &quot;VTC1&quot;  &quot;VTC2&quot;  &quot;VTC3&quot; 
-## [28] &quot;VTC4&quot;  &quot;VTC5&quot;</code></pre>
-<pre><code>## # A tibble: 112,890 x 32
-##    Date       Time   BOR     ZIP   LAT  LONG LOC   ONSN  CRSN  OFFSN `#PI` `#PK`
-##    &lt;date&gt;     &lt;time&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 2020-01-21 15:49  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BRUC~ &quot;\u0~ &lt;NA&gt;      0     0
-##  2 2020-12-31 16:30  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BELT~  &lt;NA&gt; &lt;NA&gt;      0     0
-##  3 2020-12-25 20:19  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BRON~  &lt;NA&gt; &lt;NA&gt;      0     0
-##  4 2020-04-15 15:20  &lt;NA&gt;     NA  40.7 -74.0 (40.~ GOWA~  &lt;NA&gt; &lt;NA&gt;      0     0
-##  5 2020-10-25 02:00  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  BELT~  &lt;NA&gt; &lt;NA&gt;      0     0
-##  6 2020-11-11 16:33  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  TRIB~  &lt;NA&gt; &lt;NA&gt;      0     0
-##  7 2020-04-17 01:50  MANH~ 10019  40.8 -74.0 (40.~ 11 A~ &quot;WES~ &lt;NA&gt;      1     0
-##  8 2020-12-18 07:00  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  HORA~ &quot;EAS~ &lt;NA&gt;      0     0
-##  9 2020-09-06 18:05  &lt;NA&gt;     NA  40.8 -73.8 (40.~ WHIT~  &lt;NA&gt; &lt;NA&gt;      0     1
-## 10 2020-12-13 18:35  &lt;NA&gt;     NA  NA    NA   &lt;NA&gt;  12 A~  &lt;NA&gt; &lt;NA&gt;      0     0
-## # ... with 112,880 more rows, and 20 more variables: #PEDI &lt;dbl&gt;, #PEDK &lt;dbl&gt;,
-## #   #CI &lt;dbl&gt;, #CK &lt;dbl&gt;, #MI &lt;dbl&gt;, #MK &lt;dbl&gt;, CFV1 &lt;chr&gt;, CFV2 &lt;chr&gt;,
-## #   CFV3 &lt;chr&gt;, CFV4 &lt;chr&gt;, CFV5 &lt;chr&gt;, id &lt;dbl&gt;, VTC1 &lt;chr&gt;, VTC2 &lt;chr&gt;,
-## #   VTC3 &lt;chr&gt;, VTC4 &lt;chr&gt;, VTC5 &lt;chr&gt;, Day &lt;chr&gt;, Month &lt;chr&gt;, Year &lt;chr&gt;</code></pre>
+<pre><code>##  [1] &quot;CRASH DATE&quot;                    &quot;CRASH TIME&quot;                   
+##  [3] &quot;BOROUGH&quot;                       &quot;ZIP CODE&quot;                     
+##  [5] &quot;LATITUDE&quot;                      &quot;LONGITUDE&quot;                    
+##  [7] &quot;LOCATION&quot;                      &quot;ON STREET NAME&quot;               
+##  [9] &quot;CROSS STREET NAME&quot;             &quot;OFF STREET NAME&quot;              
+## [11] &quot;NUMBER OF PERSONS INJURED&quot;     &quot;NUMBER OF PERSONS KILLED&quot;     
+## [13] &quot;NUMBER OF PEDESTRIANS INJURED&quot; &quot;NUMBER OF PEDESTRIANS KILLED&quot; 
+## [15] &quot;NUMBER OF CYCLIST INJURED&quot;     &quot;NUMBER OF CYCLIST KILLED&quot;     
+## [17] &quot;NUMBER OF MOTORIST INJURED&quot;    &quot;NUMBER OF MOTORIST KILLED&quot;    
+## [19] &quot;CONTRIBUTING FACTOR VEHICLE 1&quot; &quot;CONTRIBUTING FACTOR VEHICLE 2&quot;
+## [21] &quot;CONTRIBUTING FACTOR VEHICLE 3&quot; &quot;CONTRIBUTING FACTOR VEHICLE 4&quot;
+## [23] &quot;CONTRIBUTING FACTOR VEHICLE 5&quot; &quot;COLLISION_ID&quot;                 
+## [25] &quot;VEHICLE TYPE CODE 1&quot;           &quot;VEHICLE TYPE CODE 2&quot;          
+## [27] &quot;VEHICLE TYPE CODE 3&quot;           &quot;VEHICLE TYPE CODE 4&quot;          
+## [29] &quot;VEHICLE TYPE CODE 5&quot;</code></pre>
+<p>After subsetting the data set, we can see our new data set now has 112,890 observations and 29 columns. We first took a look at our variables. At a first glance, we can see that the column names would be too long for our visualization part. Thus, we decided to abbreviate all the column names. Below is a table for the original column names and the abbreviations we applied for every single column name as a reference.</p>
+<pre><code>##       Original Column Name            Abbreviation
+##  [1,] &quot;CRASH DATE&quot;                    &quot;Date&quot;      
+##  [2,] &quot;CRASH TIME&quot;                    &quot;Time&quot;      
+##  [3,] &quot;BOROUGH&quot;                       &quot;BOR&quot;       
+##  [4,] &quot;ZIP CODE&quot;                      &quot;ZIP&quot;       
+##  [5,] &quot;LATITUDE&quot;                      &quot;LAT&quot;       
+##  [6,] &quot;LONGITUDE&quot;                     &quot;LONG&quot;      
+##  [7,] &quot;LOCATION&quot;                      &quot;LOC&quot;       
+##  [8,] &quot;ON STREET NAME&quot;                &quot;ONSN&quot;      
+##  [9,] &quot;CROSS STREET NAME&quot;             &quot;CRSN&quot;      
+## [10,] &quot;OFF STREET NAME&quot;               &quot;OFFSN&quot;     
+## [11,] &quot;NUMBER OF PERSONS INJURED&quot;     &quot;#PI&quot;       
+## [12,] &quot;NUMBER OF PERSONS KILLED&quot;      &quot;#PK&quot;       
+## [13,] &quot;NUMBER OF PEDESTRIANS INJURED&quot; &quot;#PEDI&quot;     
+## [14,] &quot;NUMBER OF PEDESTRIANS KILLED&quot;  &quot;#PEDK&quot;     
+## [15,] &quot;NUMBER OF CYCLIST INJURED&quot;     &quot;#CI&quot;       
+## [16,] &quot;NUMBER OF CYCLIST KILLED&quot;      &quot;#CK&quot;       
+## [17,] &quot;NUMBER OF MOTORIST INJURED&quot;    &quot;#MI&quot;       
+## [18,] &quot;NUMBER OF MOTORIST KILLED&quot;     &quot;#MK&quot;       
+## [19,] &quot;CONTRIBUTING FACTOR VEHICLE 1&quot; &quot;CFV1&quot;      
+## [20,] &quot;CONTRIBUTING FACTOR VEHICLE 2&quot; &quot;CFV2&quot;      
+## [21,] &quot;CONTRIBUTING FACTOR VEHICLE 3&quot; &quot;CFV3&quot;      
+## [22,] &quot;CONTRIBUTING FACTOR VEHICLE 4&quot; &quot;CFV4&quot;      
+## [23,] &quot;CONTRIBUTING FACTOR VEHICLE 5&quot; &quot;CFV5&quot;      
+## [24,] &quot;COLLISION_ID&quot;                  &quot;id&quot;        
+## [25,] &quot;VEHICLE TYPE CODE 1&quot;           &quot;VTC1&quot;      
+## [26,] &quot;VEHICLE TYPE CODE 2&quot;           &quot;VTC2&quot;      
+## [27,] &quot;VEHICLE TYPE CODE 3&quot;           &quot;VTC3&quot;      
+## [28,] &quot;VEHICLE TYPE CODE 4&quot;           &quot;VTC4&quot;      
+## [29,] &quot;VEHICLE TYPE CODE 5&quot;           &quot;VTC5&quot;</code></pre>
+<p>After abbreviating the column names, we saw that a majority of categorical data are all in uppercase. Thus, we decided to convert all of them to lowercase with the first letter capitalized.</p>
+<pre><code>##         Date     Time  BOR ZIP      LAT      LONG                    LOC
+## 1 2020-01-21 15:49:00 &lt;NA&gt;  NA       NA        NA                   &lt;NA&gt;
+## 2 2020-12-31 16:30:00 &lt;NA&gt;  NA       NA        NA                   &lt;NA&gt;
+## 3 2020-12-25 20:19:00 &lt;NA&gt;  NA       NA        NA                   &lt;NA&gt;
+## 4 2020-04-15 15:20:00 &lt;NA&gt;  NA 40.67159 -73.99843 (40.671585, -73.99843)
+## 5 2020-10-25 02:00:00 &lt;NA&gt;  NA       NA        NA                   &lt;NA&gt;
+##                      ONSN                      CRSN OFFSN X.PI X.PK X.PEDI
+## 1           Bruckner Blvd \177&lt;U+FFFD&gt;St 138 Street  &lt;NA&gt;    0    0      0
+## 2            Belt Parkway                      &lt;NA&gt;  &lt;NA&gt;    0    0      0
+## 3 Bronx Whitestone Bridge                      &lt;NA&gt;  &lt;NA&gt;    0    0      0
+## 4      Gowanus Expy (Bqe)                      &lt;NA&gt;  &lt;NA&gt;    0    0      0
+## 5            Belt Parkway                      &lt;NA&gt;  &lt;NA&gt;    0    0      0
+##   X.PEDK X.CI X.CK X.MI X.MK                           CFV1        CFV2 CFV3
+## 1      0    0    0    0    0 Driver Inattention/Distraction Unspecified &lt;NA&gt;
+## 2      0    0    0    0    0 Reaction To Uninvolved Vehicle        &lt;NA&gt; &lt;NA&gt;
+## 3      0    0    0    0    0          Following Too Closely Unspecified &lt;NA&gt;
+## 4      0    0    0    0    0 Driver Inattention/Distraction Unspecified &lt;NA&gt;
+## 5      0    0    0    0    0 Driver Inattention/Distraction        &lt;NA&gt; &lt;NA&gt;
+##   CFV4 CFV5      id  VTC1                                VTC2 VTC3 VTC4 VTC5
+## 1 &lt;NA&gt; &lt;NA&gt; 4277087 Sedan Station Wagon/Sport Utility Vehicle &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
+## 2 &lt;NA&gt; &lt;NA&gt; 4380668 Sedan                                &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
+## 3 &lt;NA&gt; &lt;NA&gt; 4380494 Sedan                               Sedan &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
+## 4 &lt;NA&gt; &lt;NA&gt; 4407790 Sedan                Tractor Truck Diesel &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
+## 5 &lt;NA&gt; &lt;NA&gt; 4360880 Sedan                                &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;</code></pre>
+<p>From the overview of the transformed data set, it seems to be cleaned and ready for our missing value and data analysis part. Therefore, we save this cleaned data set as a new csv file in our resources folder.</p>
 
 </div>
             </section>
